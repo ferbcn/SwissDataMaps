@@ -81,6 +81,7 @@ def update_graph(api_id="Population", shape_type="Kantone"):
 
     area_name = shape_files_dict.get(shape_type)[1]
 
+    # TODO: FIX z-max according to the shape data type
     fact = gdf['EINWOHNERZ']
     z_max = 1500000
     if api_id == 'Area':
