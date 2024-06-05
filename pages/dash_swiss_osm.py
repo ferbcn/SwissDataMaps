@@ -7,6 +7,7 @@ import pandas as pd
 import plotly.express as px
 import dash
 from dash import html, dcc, callback, Output, Input
+import dash_bootstrap_components as dbc
 
 dash.register_page(
     __name__,
@@ -18,9 +19,9 @@ dash.register_page(
 )
 
 tag_key_value_list = {"restaurant": "amenity", "bank": "amenity", "bar": "amenity", "fuel": "amenity",
-                      "fast_food": "amenity", "atm": "amenity", "hospital": "amenity", "stripclub": "amenity",
+                      "fast_food": "amenity", "atm": "amenity", "hospital": "amenity", "pharmacy": "amenity",
                       "library": "amenity", "books": "shop", "park": "leisure", "station": "public_transport",
-                      "alcohol": "shop", "erotic": "shop"}
+                      "alcohol": "shop", "bakery": "shop", "bicycle": "shop", "post_office": "amenity"}
 tag_keys = list(set(tag_key_value_list.values()))
 tag_values = list(set(tag_key_value_list.keys()))
 
@@ -96,6 +97,8 @@ def get_data_overpy(country_iso_a2, tag_key, tag_value):
     Input('dropdown-value', 'value')
 )
 def update_graph(tag_value="shop"):
+    if tag_value not in tag_values:
+        tag_value = 'books'
     tag_key = tag_key_value_list[tag_value]
 
     data_dict = get_data_overpy('CH', tag_key, tag_value)

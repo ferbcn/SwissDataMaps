@@ -11,8 +11,8 @@ from dash import callback, Output, Input, dcc, html
 
 dash.register_page(
     __name__,
+    name='Zürich POIs',
     title='Zürich Tourism POIs',
-    name='Zürich Tourism',
     description='Points of Interest in Zürich retrieved from the Zürich Tourism API',
     path="/zueri",
     order=30

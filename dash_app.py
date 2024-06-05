@@ -57,7 +57,7 @@ app.layout = html.Div([
 
         html.Div(className="collapse navbar-collapse", id="navbarToggler", children=[
             html.Div(
-                dcc.Link(f"{page['name']}", href=page["relative_path"], className="nav-item nav-link"),
+                dcc.Link(f"{page['name']}", href=page["relative_path"], className="nav-item nav-link nav-button"),
             ) for page in dash.page_registry.values()
         ])
     ], className="navbar navbar-expand-lg navbar-light bg-light"),
