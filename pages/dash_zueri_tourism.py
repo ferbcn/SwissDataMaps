@@ -28,7 +28,7 @@ class ZueriData:
         self.temp_dir = TEMP_DIR
 
     def get_endpoint_list(self):
-        print('Retrieving API endpoints...')
+        print('Retrieving Zürich Tourism API endpoints...')
         api_endpoints_raw = requests.get(self.end_url)
         api_ids_names = {item.get('id'): item.get('name').get('de') for item in api_endpoints_raw.json() if not item.get('name').get('de') is None}
         return api_ids_names

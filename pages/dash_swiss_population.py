@@ -20,7 +20,10 @@ DATA_OPTIONS = ["Population", "Area", "Density"]
 
 layout = [
     html.H3(children='Swiss Data'),
-    dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-5g'),
+    html.Div([
+        dcc.Dropdown(["Kantone", "Bezirke", "Gemeinden"], 'Kantone', className='ddown', id='dropdown-shape'),
+        dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-5g'),
+    ], className="ddmenu"),
     dcc.Loading(
         id="loading",
         type="circle",
@@ -38,7 +41,6 @@ layout = [
 ]
 
 # Set the file path to the shapefile
-# shapefile = "static/Gemeinden.shp"
 shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_KANTONSGEBIET.shp"
 
 # load Shape file into GeoDataFrame
@@ -59,22 +61,34 @@ print("GeoJSON data loaded")
 # Correct string encoding for the NAME column
 gdf['NAME'] = gdf['NAME'].apply(decode_string)
 
+# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
+shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA"],
+                    "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA"],
+                    "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA"]}
 
 @callback(
     Output('graph-content-2', 'figure'),
     Input('dropdown-5g', 'value'),
+    Input('dropdown-shape', 'value'),
 )
-def update_graph(api_id="Population"):
+def update_graph(api_id="Population", shape_type="Kantone"):
 
-    #if api_id == 'Population':
+    filepath = shape_files_dict.get(shape_type)[0]
+    print("Loading Shape data...")
+    gdf = gpd.read_file(filepath)
+    print("Converting to GeoJSON...")
+    geojson_data = json.loads(gdf.to_json())
+
+    area_name = shape_files_dict.get(shape_type)[1]
+
     fact = gdf['EINWOHNERZ']
     z_max = 1500000
     if api_id == 'Area':
-        fact = gdf['KANTONSFLA']
+        fact = gdf[area_name]
         z_max = 750000
     if api_id == 'Density':
-        fact = gdf['EINWOHNERZ'] / gdf['KANTONSFLA']
-        z_max = 10
+        fact = gdf['DICHTE']
+        z_max = 10000
 
     # Create a figure
     fig = go.Figure(go.Choroplethmapbox(geojson=geojson_data, locations=gdf.index, z=fact,

@@ -6,7 +6,6 @@ from dash import html, dcc, callback, Output, Input
 import geopandas as gpd
 import plotly.graph_objects as go
 
-from string_decode import decode_string
 
 dash.register_page(
     __name__,
@@ -17,13 +16,13 @@ dash.register_page(
 )
 
 layout = html.Div([
-    html.H3(children='5G Antenna Coverage'),
-    # dcc.Dropdown(["5G-Coverage"], '5G-Coverage', className='ddown', id='dropdown-ant'),
+    html.H3(children='5G Network Coverage'),
+    dcc.Dropdown(["Kantone", "Bezirke", "Gemeinden"], 'Kantone', className='ddown', id='dropdown-shape'),
     dcc.Checklist(
         id='layer-toggle',
-        options=[{'label': 'Population Density', 'value': 'Pop'}, {'label': '5G Antennas', 'value': '5G'}],
-        value=['5G'],
-        className='layer-toggle switch'
+        options=[{'label': 'Population Density', 'value': 'Pop', 'className':'checkbox'}, {'label': '5G Antennas', 'value': '5G'}],
+        value=['5G', 'Pop'],
+        className='layer-toggle',
     ),
     dcc.Loading(
         id="loading",
@@ -41,55 +40,31 @@ layout = html.Div([
     ], className='source-data')
 ])
 
-
-# Set the file path to the shapefile
-# shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_BEZIRKSGEBIET.shp"
-# shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_KANTONSGEBIET.shp"
-shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.shp"
-# load Shape file into GeoDataFrame
-gdf = gpd.GeoDataFrame.from_file(shapefile)
-
-# Convert to WGS84
-gdf.crs = "EPSG:2056"  # Use CH1903+ / LV95 (epsg:2056)
-# Use WGS84 (epsg:4326) as the geographic coordinate system
-gdf = gdf.to_crs(epsg=4326)
-
-# Convert the GeoDataFrame to GeoJSON
-geojson_data = json.loads(gdf.to_json())
-print("GeoJSON data loaded")
-
-# Prepare antenna data
-filepath = 'static/antennenstandorte-5g_de.json'
-ant_gdf = gpd.read_file(filepath)
-
-# Use WGS 84 (epsg:4326) as the geographic coordinate system
-ant_gdf = ant_gdf.to_crs(epsg=4326)
-
-# Convert powercode_de to integer value
-# dictionary to convert antenna power data
-powercodes = {"Sehr Klein": 2, "Klein": 3, "Mittel": 5, "Gross": 10}
-# convert powercode_de to integer value
-ant_gdf["power_int"] = ant_gdf["powercode_de"].apply(lambda x: powercodes.get(x))
-
-# create lat and lon columns in ant_gdf
-ant_gdf['lat'] = ant_gdf.geometry.y
-ant_gdf['lon'] = ant_gdf.geometry.x
-
-#print(gdf.columns)
-gdf['DICHTE'] = gdf['EINWOHNERZ'] / gdf['GEM_FLAECH'] * 1000    # BEZIRKSFLA, KANTONSFLA
-z_max = 10000
-
-# Correct string encoding for the NAME column
-gdf['NAME'] = gdf['NAME'].apply(decode_string)
-
+# Load Antenna data from JSON file
+print("Loading Antenna data...")
+ant_gdf = gpd.read_file("static/ant_gdf.json")
 count = len(ant_gdf)
 
+# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
+shape_files_dict = {"Kantone": "static/gdf_kan.json",
+                    "Bezirke": "static/gdf_bez.json",
+                    "Gemeinden": "static/gdf_gem.json"}
+
+# TODO: maybe load all GDFs into memory in one go on startup
 
 @callback(
     Output('graph-content-ant', 'figure'),
     Input('layer-toggle', 'value'),
+    Input('dropdown-shape', 'value'),
 )
-def update_graph(selected_layers=None):
+def update_graph(selected_layers=None, shape_type=None):
+
+    filepath = shape_files_dict.get(shape_type)
+    print("Loading Shape data...")
+    gdf = gpd.read_file(filepath)
+    print("Converting to GeoJSON...")
+    geojson_data = json.loads(gdf.to_json())
+    z_max = 10000
 
     # Create a pandas DataFrame from the dictionary
     if '5G' in selected_layers:
