@@ -40,27 +40,6 @@ layout = [
     ], className='source-data')
 ]
 
-# Set the file path to the shapefile
-shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_KANTONSGEBIET.shp"
-
-# load Shape file into GeoDataFrame
-gdf = gpd.GeoDataFrame.from_file(shapefile)
-
-# Convert Polygon Z to Polygon
-# gdf['geometry'] = gdf['geometry'].apply(lambda p: Polygon([(x, y) for x, y, z in p.exterior.coords]))
-
-# Convert to WGS84
-gdf.crs = "EPSG:2056"  # Use CH1903+ / LV95 (epsg:2056)
-# Use WGS84 (epsg:4326) as the geographic coordinate system
-gdf = gdf.to_crs(epsg=4326)
-
-# Convert the GeoDataFrame to GeoJSON
-geojson_data = json.loads(gdf.to_json())
-print("GeoJSON data loaded")
-
-# Correct string encoding for the NAME column
-gdf['NAME'] = gdf['NAME'].apply(decode_string)
-
 # Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
 shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA"],
                     "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA"],
