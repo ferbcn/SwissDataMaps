@@ -110,7 +110,9 @@ def update_graph(api_id=101):
     # Create a pandas DataFrame from the dictionary
     df = pd.DataFrame(data_dict)
     fig = px.density_mapbox(df, lat=lats, lon=longs, radius=10,
-                            mapbox_style="open-street-map", custom_data=['names', 'infos'])
+                            mapbox_style="open-street-map", color_continuous_scale="spectral",
+                            custom_data=['names', 'infos']
+                            )
     fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
     fig.update_layout(title_text=f"{api_ids_names.get(str(api_id))}: {total_points} points", title_font={'size': 12})
     fig.update_layout(coloraxis_showscale=False,

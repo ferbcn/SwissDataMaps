@@ -109,7 +109,8 @@ def update_graph(tag_value="shop"):
     # Create a pandas DataFrame from the dictionary
     df = pd.DataFrame(data_dict)
     fig = px.density_mapbox(df, lat=data_dict["lats"], lon=data_dict["longs"], radius=10,
-                            mapbox_style="open-street-map", custom_data=['names', 'websites'])
+                            mapbox_style="open-street-map", color_continuous_scale="inferno",
+                            custom_data=['names', 'websites'])
     fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
     fig.update_layout(title_text=f"{tag_value.capitalize()}: {total_points} points", title_font={'size': 12})
     fig.update_layout(coloraxis_showscale=False,
