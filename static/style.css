@@ -1,0 +1,83 @@
+body{
+    text-align: center;
+    font-family: arial, serif;
+    font-size: 16px;
+}
+
+/* Navigation Menu and HomePage */
+
+.logo-text-box{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: flex-end;
+    padding: 5vw;
+    width: 90%;
+}
+
+.logo{
+    float: left;
+    width: 20vw;
+    height: 20vw;
+    margin-right: 20px;
+}
+
+.long-text{
+    padding-left: 2vw;
+    font-size: 16px;
+    text-align: left;
+}
+
+.homepage-links{
+    padding: 10px;
+}
+
+.pagefooter {
+    font-size: 12px;
+    position: fixed;
+    left: 0;
+    bottom: 0px;
+    width: 100%;
+    background-color: #444;
+    color: white;
+    text-align: center;
+}
+.copyrightfooter {
+    font-size: 12px;
+    position: fixed;
+    left: 0;
+    bottom: 25px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Maps and Visualizations */
+
+.ddown{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.source-data {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-size: 12px;
+    position: relative;
+    width: 100%;
+    color: #444;
+}
+
+#graph-content{
+    padding: 0;
+}
+
+
+.btn-primary{
+    width: 12vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

@@ -1,0 +1,9 @@
+gunicorn
+uvicorn
+fastapi
+requests
+dash
+pandas
+plotly
+overpy
+geopandas
