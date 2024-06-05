@@ -75,4 +75,5 @@ jobs:
         with:
           app-name: 'SwissDataMapsDev'
           slot-name: 'Production'
+          startup-command: 'gunicorn --worker-class uvicorn.workers.UvicornWorker --timeout 600 main:app'
           
