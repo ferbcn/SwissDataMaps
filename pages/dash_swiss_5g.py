@@ -23,7 +23,7 @@ layout = html.Div([
         id='layer-toggle',
         options=[{'label': 'Population Density', 'value': 'Pop'}, {'label': '5G Antennas', 'value': '5G'}],
         value=['5G'],
-        className='layer-toggle'
+        className='layer-toggle switch'
     ),
     dcc.Loading(
         id="loading",
@@ -43,9 +43,9 @@ layout = html.Div([
 
 
 # Set the file path to the shapefile
-# shapefile = "static/Gemeinden.shp"
-shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_KANTONSGEBIET.shp"
-
+# shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_BEZIRKSGEBIET.shp"
+# shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_KANTONSGEBIET.shp"
+shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.shp"
 # load Shape file into GeoDataFrame
 gdf = gpd.GeoDataFrame.from_file(shapefile)
 
@@ -75,13 +75,14 @@ ant_gdf["power_int"] = ant_gdf["powercode_de"].apply(lambda x: powercodes.get(x)
 ant_gdf['lat'] = ant_gdf.geometry.y
 ant_gdf['lon'] = ant_gdf.geometry.x
 
-gdf['DICHTE'] = gdf['EINWOHNERZ'] / gdf['KANTONSFLA']
+#print(gdf.columns)
+gdf['DICHTE'] = gdf['EINWOHNERZ'] / gdf['GEM_FLAECH'] * 1000    # BEZIRKSFLA, KANTONSFLA
+z_max = 10000
 
 # Correct string encoding for the NAME column
 gdf['NAME'] = gdf['NAME'].apply(decode_string)
 
 count = len(ant_gdf)
-z_max = 10
 
 
 @callback(
