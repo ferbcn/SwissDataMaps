@@ -68,7 +68,7 @@ app.layout = html.Div([
     html.Div(id='my-div', children=build_page_registry()),  # This div is used to show all links in the home page
 
     html.Div(
-        children='Copyright © 2023 Swiss Geo Data Maps. All rights reserved.',
+        children='Copyright © 2024 Swiss Geo Data Maps. All rights reserved.',
         className='copyrightfooter'
     ),
     html.A(
