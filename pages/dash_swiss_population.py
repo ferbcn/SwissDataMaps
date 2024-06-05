@@ -18,7 +18,7 @@ DATA_OPTIONS = ["Population", "Area", "Density"]
 
 layout = [
     html.H3(children='Swiss Data'),
-    dcc.Dropdown(DATA_OPTIONS, className='ddown', id='dropdown-5g'),
+    dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-5g'),
     dcc.Loading(
         id="loading",
         type="circle",
@@ -71,10 +71,6 @@ gdf['NAME'] = gdf['NAME'].apply(decode_string)
 )
 def update_graph(api_id="Population"):
 
-    # # save the GeoJSON file
-    # with open("static/gemeinden.geojson", "w") as f:
-    #      f.write(json.dumps(geojson_data, indent=2))
-
     #if api_id == 'Population':
     fact = gdf['EINWOHNERZ']
     z_max = 1500000
@@ -84,7 +80,6 @@ def update_graph(api_id="Population"):
     if api_id == 'Density':
         fact = gdf['EINWOHNERZ'] / gdf['KANTONSFLA']
         z_max = 10
-
 
     # Create a figure
     fig = go.Figure(go.Choroplethmapbox(geojson=geojson_data, locations=gdf.index, z=fact,

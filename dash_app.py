@@ -1,10 +1,7 @@
 import os
-
 import dash
 from dash import Dash, html, dcc
-
 from dash.dependencies import Input, Output
-
 from link_maker import build_page_registry
 
 external_stylesheets = [
@@ -23,7 +20,7 @@ TEMP_DIR = 'temp'
 # On startup
 # Check if the temp directory exists
 if os.path.exists(TEMP_DIR):
-    print('Temp directory exists')
+    print('Temp directory present')
 else:
     print('Creating temp directory')
     os.makedirs(TEMP_DIR)
@@ -48,10 +45,23 @@ app.layout = html.Div([
     dcc.Location(id='url', refresh=False),  # used to track the current location and show home page links
 
     html.Nav([
-        html.Div(
-            dcc.Link(f"{page['name']}", href=page["relative_path"], className="btn btn-sm btn-primary"),
-        ) for page in dash.page_registry.values()
-    ], className="d-flex justify-content-around navbar navbar-expand-lg navbar-light bg-light"),
+        html.Button(className="navbar-toggler", type="button", **{
+            'data-toggle': "collapse",
+            'data-target': "#navbarToggler",
+            'aria-controls': "navbarToggler",
+            'aria-expanded': "false",
+            'aria-label': "Toggle navigation"
+        }, children=[
+            html.Span(className="navbar-toggler-icon")
+        ]),
+
+        html.Div(className="collapse navbar-collapse", id="navbarToggler", children=[
+            html.Div(
+                dcc.Link(f"{page['name']}", href=page["relative_path"], className="nav-item nav-link"),
+            ) for page in dash.page_registry.values()
+        ])
+    ], className="navbar navbar-expand-lg navbar-light bg-light"),
+
     html.Br(),
     dash.page_container,
 
