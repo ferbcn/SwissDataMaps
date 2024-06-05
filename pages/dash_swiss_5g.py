@@ -6,6 +6,8 @@ from dash import html, dcc, callback, Output, Input
 import geopandas as gpd
 import plotly.graph_objects as go
 
+from string_decode import decode_string
+
 dash.register_page(
     __name__,
     name='Swiss 5G Coverage',
@@ -75,6 +77,9 @@ ant_gdf['lon'] = ant_gdf.geometry.x
 
 gdf['DICHTE'] = gdf['EINWOHNERZ'] / gdf['KANTONSFLA']
 
+# Correct string encoding for the NAME column
+gdf['NAME'] = gdf['NAME'].apply(decode_string)
+
 count = len(ant_gdf)
 z_max = 10
 
@@ -105,6 +110,8 @@ def update_graph(selected_layers=None):
             zmax=z_max,
             marker_opacity=0.5,
             marker_line_width=0,
+            customdata=gdf['NAME'].values.reshape(-1, 1),
+            hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>',
             visible= True if 'Pop' in selected_layers else False
         )
     )

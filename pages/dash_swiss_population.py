@@ -5,6 +5,8 @@ from dash import callback, Output, Input, dcc, html
 
 import geopandas as gpd
 
+from string_decode import decode_string
+
 dash.register_page(
     __name__,
     title='Swiss Population',
@@ -34,13 +36,6 @@ layout = [
         )
     ], className='source-data')
 ]
-
-
-# Correct wrong string encoding, TODO: Check data source / import
-def decode_string(s):
-    if isinstance(s, str):
-        return s.encode('latin1').decode('utf8')
-    return s
 
 # Set the file path to the shapefile
 # shapefile = "static/Gemeinden.shp"
@@ -85,8 +80,9 @@ def update_graph(api_id="Population"):
     fig = go.Figure(go.Choroplethmapbox(geojson=geojson_data, locations=gdf.index, z=fact,
                                         colorscale="Viridis", zmin=0, zmax=z_max,
                                         marker_opacity=0.5, marker_line_width=0,
-                                        hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>',
-                                        customdata=gdf['NAME'].values.reshape(-1, 1)))
+                                        customdata=gdf['NAME'].values.reshape(-1, 1),
+                                        hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>'
+                                        ))
 
     # Set the mapbox style and center
     fig.update_layout(mapbox_style="carto-positron",
