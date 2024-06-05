@@ -1,7 +1,24 @@
+:root {
+    --primary: #21538a;
+    --secondary: #228bce;
+}
+
 body{
+    /*position: absolute;*/
+    /*top: 40px;*/
+    /*left: 0;*/
     text-align: center;
     font-family: arial, serif;
     font-size: 16px;
+    background-color: #fff;
+    width: 100%;
+}
+
+a{
+    color: var(--primary);
+}
+a:hover{
+    color: var(--secondary);
 }
 
 /* Navigation Menu and HomePage */
@@ -74,10 +91,48 @@ body{
     padding: 0;
 }
 
+.my-navbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    overflow-x: scroll;
+    box-shadow: 0 2px 4px var(--primary);
+}
+.my-navbar::-webkit-scrollbar { /* For Chrome, Safari and Opera */
+    display: none;
+}
 
-.btn-primary{
-    width: 12vw;
+.my-btn-primary{
+    padding: 5px 10px;
+    border: none;
+    width: 15vw;
+    min-width: 100px; /* adjust as needed */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    background-color: var(--primary);
+    color: white;
+    cursor: pointer;
+    margin: 0 10px;
+    box-shadow: 0 2px 4px var(--primary);
+}
+.my-btn-primary:hover{
+    background-color: #1a3a5f;
+}
+
+.nav-link{
+    color: var(--primary);
+}
+
+.navbar{
+    position:fixed;
+    top:0;
+    width: 100%;
+    z-index: 99999999;
 }
