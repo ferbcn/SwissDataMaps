@@ -74,6 +74,8 @@ ant_gdf['lat'] = ant_gdf.geometry.y
 ant_gdf['lon'] = ant_gdf.geometry.x
 
 gdf['DICHTE'] = gdf['EINWOHNERZ'] / gdf['KANTONSFLA']
+
+count = len(ant_gdf)
 z_max = 10
 
 
@@ -84,9 +86,13 @@ z_max = 10
 def update_graph(selected_layers=None):
 
     # Create a pandas DataFrame from the dictionary
-    df = pd.DataFrame(ant_gdf)
+    if '5G' in selected_layers:
+        df = pd.DataFrame(ant_gdf)
+    else:
+        df = pd.DataFrame(ant_gdf)[0:0]
+
     fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=df.power_int,
-                            mapbox_style="open-street-map",
+                            mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=7,
                             )
 
     fig.add_trace(
@@ -104,7 +110,7 @@ def update_graph(selected_layers=None):
     )
 
     #fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
-    fig.update_layout(title_text=f"{len(df)} antennas", title_font={'size': 12})
+    fig.update_layout(title_text=f"{count} antennas", title_font={'size': 12})
     fig.update_layout(coloraxis_showscale=False,
                       autosize=True,
                       margin=dict(
