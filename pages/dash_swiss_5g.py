@@ -25,7 +25,10 @@ layout = html.Div([
             value=['5G'],
             className='layer-toggle',
         ),
-        dcc.Dropdown(ddown_options, '-', className='ddown', id='dropdown-shape'),
+        html.Div([
+            "Pop. density:",
+            dcc.Dropdown(ddown_options, '-', className='ddown', id='dropdown-shape')
+        ], className='ddmenu'),
     ], className="ddmenu"),
 
     dcc.Loading(

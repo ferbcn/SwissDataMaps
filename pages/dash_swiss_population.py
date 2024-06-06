@@ -19,7 +19,7 @@ TEMP_DIR = 'temp'
 DATA_OPTIONS = ["Population", "Area", "Density"]
 
 layout = [
-    html.H3(children='Swiss Data'),
+    html.H3(children='Swiss Population'),
     html.Div([
         dcc.Dropdown(["Kantone", "Bezirke", "Gemeinden"], 'Kantone', className='ddown', id='dropdown-shape'),
         dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-5g'),
