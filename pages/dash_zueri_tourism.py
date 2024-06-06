@@ -15,7 +15,8 @@ dash.register_page(
     title='Zürich Tourism POIs',
     description='Points of Interest in Zürich retrieved from the Zürich Tourism API',
     path="/zueri",
-    order=30
+    image_url='assets/zueri.png',
+    order=10
 )
 
 TEMP_DIR = 'temp'
@@ -111,7 +112,8 @@ def update_graph(api_id=101):
     df = pd.DataFrame(data_dict)
     fig = px.density_mapbox(df, lat=lats, lon=longs, radius=10,
                             mapbox_style="open-street-map", color_continuous_scale="spectral",
-                            custom_data=['names', 'infos']
+                            custom_data=['names', 'infos'],
+                            center=dict(lat=47.37, lon=8.53), zoom=12
                             )
     fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
     fig.update_layout(title_text=f"{api_ids_names.get(str(api_id))}: {total_points} points", title_font={'size': 12})

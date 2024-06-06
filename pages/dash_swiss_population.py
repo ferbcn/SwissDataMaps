@@ -13,6 +13,7 @@ dash.register_page(
     title='Swiss Population Data',
     description='Map of Switzerland with Population, Area and Density by Kanton.',
     path="/swiss",
+    image_url='assets/swiss.png'
 )
 
 TEMP_DIR = 'temp'

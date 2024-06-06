@@ -25,12 +25,16 @@ def build_nav_links():
 
 def build_page_registry():
     links = html.Div([
-        html.Div([
-            html.H4(
-                dcc.Link(f"{page['name']}", href=page['relative_path']),
-            ),
-            html.P(page['description']),
-        ], className="link-item") for page in dash.page_registry.values() if page['name'] != 'Home'
-    ], className="homepage-links")
+        dcc.Link(
+            html.Div([
+                html.H4(f"{page['name']}"),
+                html.Div([
+                    html.Img(src=page['image_url'], className='link-item-img'),
+                    html.P(page['description']),
+                ], className='link-item-img-text'),
+            ], className="link-item"),
+            href=page['relative_path']
+        ) for page in dash.page_registry.values() if page['name'] != 'Home'
+    ], className="homepage-links"),
     return links
 

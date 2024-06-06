@@ -21,6 +21,12 @@ a:hover{
     color: var(--secondary);
 }
 
+p{
+    text-align: left;
+    padding: 10px;
+}
+
+
 /* Navigation Menu and HomePage */
 
 .logo-text-box{
@@ -47,20 +53,38 @@ a:hover{
 
 .homepage-links{
     padding: 10px;
+    margin-bottom: 100px;
+    color: #222;
+}
+.homepage-links a{
+    text-decoration: none;
+}
+
+.homepage-links:hover{
+    color: lightgray;
 }
 
 .link-item {
     padding: 20px;
-}
-
-.link-item:hover a{
-    color: lightgray;
+    color: #222;
 }
 
 .link-item:hover{
     background-color: var(--primary);
-    color: white;
+    color: lightgray;
     transition: background-color 0.3s ease-in-out;
+}
+.link-item-img-text{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 20px;
+}
+.link-item-img {
+    height: 100px;
+    width: 100px;
+    box-shadow: 0 2px 4px rgb(0,0,0,0.5);
 }
 
 .nav-item{
@@ -173,4 +197,5 @@ a:hover{
     justify-content: space-around;
     align-items: center;
 }
+
 

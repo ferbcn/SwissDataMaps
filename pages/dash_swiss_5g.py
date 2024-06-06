@@ -14,6 +14,7 @@ dash.register_page(
     title='Swiss 5G-Network Coverage',
     description='Points of 5G Antenna Coverage in Switzerland',
     path='/antenna',
+    image_url='assets/antenna.png'
 )
 
 layout = html.Div([
