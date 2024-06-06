@@ -51,6 +51,8 @@ shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA"],
     Input('dropdown-shape', 'value'),
 )
 def update_graph(api_id="Population", shape_type="Kantone"):
+    # if api_id is None or shape_type is None:
+    #     return
 
     filepath = shape_files_dict.get(shape_type)[0]
     print("Loading Shape data...")
@@ -61,6 +63,7 @@ def update_graph(api_id="Population", shape_type="Kantone"):
     area_name = shape_files_dict.get(shape_type)[1]
 
     # TODO: FIX z-max according to the shape data type
+
     fact = gdf['EINWOHNERZ']
     z_max = 1500000
     if api_id == 'Area':
