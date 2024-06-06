@@ -41,9 +41,9 @@ layout = [
 ]
 
 # Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
-shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA"],
-                    "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA"],
-                    "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA"]}
+shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5000, 10000]],
+                    "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA", [100000, 500, 10000]],
+                    "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA", [100000, 200, 10000]]}
 
 @callback(
     Output('graph-content-2', 'figure'),
@@ -61,17 +61,17 @@ def update_graph(api_id="Population", shape_type="Kantone"):
     geojson_data = json.loads(gdf.to_json())
 
     area_name = shape_files_dict.get(shape_type)[1]
+    z_max_options = shape_files_dict.get(shape_type)[2]
 
-    # TODO: FIX z-max according to the shape data type
-
+    # api_id == 'Population'
     fact = gdf['EINWOHNERZ']
-    z_max = 1500000
+    z_max = z_max_options[0]
     if api_id == 'Area':
-        fact = gdf[area_name]
-        z_max = 750000
+        fact = gdf[area_name] / 100  # to km^2
+        z_max = z_max_options[1]
     if api_id == 'Density':
         fact = gdf['DICHTE']
-        z_max = 10000
+        z_max = z_max_options[2]
 
     # Create a figure
     fig = go.Figure(go.Choroplethmapbox(geojson=geojson_data, locations=gdf.index, z=fact,

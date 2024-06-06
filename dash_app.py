@@ -6,7 +6,7 @@ from link_maker import build_page_registry
 
 external_stylesheets = [
     'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
-    'static/style.css'
+    'assets/style.css'
 ]
 
 external_scripts = [

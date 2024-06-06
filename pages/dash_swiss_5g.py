@@ -6,6 +6,7 @@ from dash import html, dcc, callback, Output, Input
 import geopandas as gpd
 import plotly.graph_objects as go
 
+ddown_options = ["-", "Kantone", "Bezirke", "Gemeinden"]
 
 dash.register_page(
     __name__,
@@ -17,13 +18,16 @@ dash.register_page(
 
 layout = html.Div([
     html.H3(children='5G Network Coverage'),
-    dcc.Dropdown(["Kantone", "Bezirke", "Gemeinden"], 'Kantone', className='ddown', id='dropdown-shape'),
-    dcc.Checklist(
-        id='layer-toggle',
-        options=[{'label': 'Population Density', 'value': 'Pop', 'className':'checkbox'}, {'label': '5G Antennas', 'value': '5G'}],
-        value=['5G', 'Pop'],
-        className='layer-toggle',
-    ),
+    html.Div([
+        dcc.Checklist(
+            id='layer-toggle',
+            options=[{'label': '5G Antennas', 'value': '5G'}],
+            value=['5G'],
+            className='layer-toggle',
+        ),
+        dcc.Dropdown(ddown_options, '-', className='ddown', id='dropdown-shape'),
+    ], className="ddmenu"),
+
     dcc.Loading(
         id="loading",
         type="circle",
@@ -59,12 +63,6 @@ shape_files_dict = {"Kantone": "static/gdf_kan.json",
 )
 def update_graph(selected_layers=None, shape_type=None):
 
-    filepath = shape_files_dict.get(shape_type)
-    print("Loading Shape data...")
-    gdf = gpd.read_file(filepath)
-    print("Converting to GeoJSON...")
-    geojson_data = json.loads(gdf.to_json())
-    z_max = 10000
 
     # Create a pandas DataFrame from the dictionary
     if '5G' in selected_layers:
@@ -75,23 +73,6 @@ def update_graph(selected_layers=None, shape_type=None):
     fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=df.power_int,
                             mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=7,
                             )
-
-    fig.add_trace(
-        go.Choroplethmapbox(
-            geojson=geojson_data,
-            locations=gdf.index,  # or replace with the column containing the feature identifiers
-            z=gdf['DICHTE'],  # or replace with the column containing the values to color-code
-            colorscale="reds",
-            zmin=0,
-            zmax=z_max,
-            marker_opacity=0.5,
-            marker_line_width=0,
-            customdata=gdf['NAME'].values.reshape(-1, 1),
-            hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>',
-            visible= True if 'Pop' in selected_layers else False
-        )
-    )
-
     #fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
     fig.update_layout(title_text=f"{count} antennas", title_font={'size': 12})
     fig.update_layout(coloraxis_showscale=False,
@@ -104,6 +85,32 @@ def update_graph(selected_layers=None, shape_type=None):
                           pad=10  # padding
                           ),
                       )
+
+    # Draw map with shape data
+    if shape_type in ddown_options[1:]:
+        filepath = shape_files_dict.get(shape_type)
+        print("Loading Shape data...")
+        gdf = gpd.read_file(filepath)
+        print("Converting to GeoJSON...")
+        geojson_data = json.loads(gdf.to_json())
+        z_max = 10000
+
+        fig.add_trace(
+            go.Choroplethmapbox(
+                geojson=geojson_data,
+                locations=gdf.index,  # or replace with the column containing the feature identifiers
+                z=gdf['DICHTE'],  # or replace with the column containing the values to color-code
+                colorscale="reds",
+                zmin=0,
+                zmax=z_max,
+                marker_opacity=0.5,
+                marker_line_width=0,
+                customdata=gdf['NAME'].values.reshape(-1, 1),
+                hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>',
+                visible= True if shape_type in ddown_options[1:] else False
+            )
+        )
+
     return fig
 
 

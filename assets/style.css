@@ -5,7 +5,7 @@
 
 body{
     position: absolute;
-    top: 40px;
+    top: 50px;
     left: 0;
     text-align: center;
     font-family: arial, serif;
@@ -161,7 +161,6 @@ a:hover{
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    width: 100%
 }
 
 .layer-toggle input {
