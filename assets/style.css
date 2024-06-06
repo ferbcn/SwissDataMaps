@@ -13,6 +13,22 @@ body{
     background-color: #fff;
     width: 100%;
 }
+.container-outer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+
+.container-main{
+    margin-top: 10px;
+    width: 100%;
+    max-width: 1000px;
+}
 
 a{
     color: var(--primary);
@@ -21,6 +37,12 @@ a:hover{
     color: var(--secondary);
 }
 
+p{
+    text-align: left;
+    padding: 10px;
+}
+
+
 /* Navigation Menu and HomePage */
 
 .logo-text-box{
@@ -28,7 +50,7 @@ a:hover{
     flex-direction: row;
     justify-content: flex-start;
     align-content: flex-end;
-    padding: 5vw;
+    padding: 0 50px;
     width: 90%;
 }
 
@@ -36,31 +58,51 @@ a:hover{
     float: left;
     width: 20vw;
     height: 20vw;
+    max-width: 200px;
+    max-height: 200px;
     margin-right: 20px;
+    box-shadow: 0 2px 4px rgb(0,0,0,0.5);
 }
 
 .long-text{
     padding-left: 2vw;
-    font-size: 16px;
     text-align: left;
 }
 
 .homepage-links{
     padding: 10px;
+    margin-bottom: 100px;
+    color: #222;
+}
+.homepage-links a{
+    text-decoration: none;
+}
+
+.homepage-links:hover{
+    color: lightgray;
 }
 
 .link-item {
     padding: 20px;
-}
-
-.link-item:hover a{
-    color: lightgray;
+    color: #222;
 }
 
 .link-item:hover{
     background-color: var(--primary);
-    color: white;
+    color: lightgray;
     transition: background-color 0.3s ease-in-out;
+}
+.link-item-img-text{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 20px;
+}
+.link-item-img {
+    height: 100px;
+    width: 100px;
+    box-shadow: 0 2px 4px rgb(0,0,0,0.5);
 }
 
 .nav-item{
@@ -173,4 +215,5 @@ a:hover{
     justify-content: space-around;
     align-items: center;
 }
+
 

@@ -46,10 +46,11 @@ app.layout = html.Div([
 
     build_nav_links(),
 
-    html.Br(),
-    dash.page_container,
+    html.Div([
+        html.Div(dash.page_container, className='container-main'),
+        html.Div(id='my-div', children=build_page_registry()),  # This div is used to show all links in the home page
+    ], className='container-outer'),
 
-    html.Div(id='my-div', children=build_page_registry()),  # This div is used to show all links in the home page
 
     html.Div(
         children='Copyright © 2024 Swiss Geo Data Maps. All rights reserved.',
