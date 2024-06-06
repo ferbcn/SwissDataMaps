@@ -4,9 +4,9 @@
 }
 
 body{
-    position: absolute;
-    top: 50px;
-    left: 0;
+    /*position: absolute;*/
+    /*top: 50px;*/
+    /*left: 0;*/
     text-align: center;
     font-family: arial, serif;
     font-size: 16px;
@@ -88,10 +88,10 @@ a:hover{
 }
 
 .navbar{
-    position:fixed;
-    top:0;
-    width: 100%;
-    z-index: 99999999;
+    /*position:fixed;*/
+    /*top:0;*/
+    /*width: 100%;*/
+    /*z-index: 99999999;*/
     /*box-shadow: 0 2px 4px var(--primary);*/
 }
 
