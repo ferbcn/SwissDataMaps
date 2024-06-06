@@ -39,7 +39,6 @@ a:hover{
 
 p{
     text-align: left;
-    padding: 10px;
 }
 
 
@@ -104,6 +103,7 @@ p{
     height: 100px;
     width: 100px;
     box-shadow: 0 2px 4px rgb(0,0,0,0.5);
+    margin-right: 20px;
 }
 
 .nav-item{
