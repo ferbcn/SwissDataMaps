@@ -1,4 +1,4 @@
-# Swiss Geo Data Maps - DEV BRANCH
+# Swiss Geo Data Maps
 
 This project is a web application that uses different data sources to display geospatial data and information using Plotly Dash ontop of a FastApi Web Server (Starlett, gunicorn/uvicorn under the hood).
 
