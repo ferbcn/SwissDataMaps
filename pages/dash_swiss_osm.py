@@ -10,8 +10,8 @@ from dash import html, dcc, callback, Output, Input
 
 dash.register_page(
     __name__,
-    title='Open Street Maps POIs',
     name='Open Street Maps',
+    title='Open Street Maps POIs',
     description='Open Street Maps Points of Interest collected via the Overpass API using python overpy',
     path='/osm',
     order=20

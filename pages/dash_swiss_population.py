@@ -9,8 +9,8 @@ from string_decode import decode_string
 
 dash.register_page(
     __name__,
-    title='Swiss Population',
     name='Swiss Population',
+    title='Swiss Population Data',
     description='Map of Switzerland with Population, Area and Density by Kanton.',
     path="/swiss",
 )
