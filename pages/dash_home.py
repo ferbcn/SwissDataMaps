@@ -4,7 +4,7 @@ from dash import html, dcc
 dash.register_page(__name__,
                    path='/',
                    name='Home',
-                   title="Geo Data Maps",
+                   title="Home",
                    description="Landing Page for all available maps",
                    order=0,
                    top_menu=True

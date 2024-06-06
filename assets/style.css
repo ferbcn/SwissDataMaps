@@ -5,7 +5,7 @@
 
 body{
     /*position: absolute;*/
-    /*top: 40px;*/
+    /*top: 50px;*/
     /*left: 0;*/
     text-align: center;
     font-family: arial, serif;
@@ -49,6 +49,52 @@ a:hover{
     padding: 10px;
 }
 
+.link-item {
+    padding: 20px;
+}
+
+.link-item:hover a{
+    color: lightgray;
+}
+
+.link-item:hover{
+    background-color: var(--primary);
+    color: white;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.nav-item{
+    text-align: left;
+}
+
+.navbar-toggler{
+    border-radius: 0;
+    /*box-shadow: 0 2px 4px var(--primary);*/
+}
+
+.nav-button{
+    min-width: 120px; /* adjust as needed */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--primary);
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out; /* Add this line to animate the background color change */
+}
+
+.nav-button:hover{
+    background-color: rgb(33, 83, 138, 0.2); /* Change the background color on hover */
+    color: var(--primary);
+}
+
+.navbar{
+    /*position:fixed;*/
+    /*top:0;*/
+    /*width: 100%;*/
+    /*z-index: 99999999;*/
+    /*box-shadow: 0 2px 4px var(--primary);*/
+}
+
 .pagefooter {
     font-size: 12px;
     position: fixed;
@@ -69,12 +115,31 @@ a:hover{
 }
 
 /* Maps and Visualizations */
+.ddown {
+    padding: 10px;
+    max-width: 50vw;
+    min-width: 200px;
+    margin: 0 auto;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
 
-.ddown{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
+.ddown:focus {
+    /*outline: none;*/
+}
+
+.ddown option {
+    padding: 10px;
+    background-color: #f2f2f2;
+    color: #21538a;
+}
+
+.Select-control{
+    text-align: left;
+    box-shadow: 0 2px 4px rgb(0,0,0,0.5);
+    border-radius: 0;
+    cursor: pointer;
 }
 
 .source-data {
@@ -91,48 +156,21 @@ a:hover{
     padding: 0;
 }
 
-.my-navbar{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 10px 0;
+.layer-toggle{
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-evenly;
-    overflow-x: scroll;
-    box-shadow: 0 2px 4px var(--primary);
-}
-.my-navbar::-webkit-scrollbar { /* For Chrome, Safari and Opera */
-    display: none;
+    justify-content: space-around;
+    align-items: center;
 }
 
-.my-btn-primary{
-    padding: 5px 10px;
-    border: none;
-    width: 15vw;
-    min-width: 100px; /* adjust as needed */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    background-color: var(--primary);
-    color: white;
-    cursor: pointer;
-    margin: 0 10px;
-    box-shadow: 0 2px 4px var(--primary);
-}
-.my-btn-primary:hover{
-    background-color: #1a3a5f;
+.layer-toggle input {
+    margin: 10px;
 }
 
-.nav-link{
-    color: var(--primary);
+.ddmenu{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
 
-.navbar{
-    position:fixed;
-    top:0;
-    width: 100%;
-    z-index: 99999999;
-}

@@ -5,10 +5,12 @@ from dash import callback, Output, Input, dcc, html
 
 import geopandas as gpd
 
+from string_decode import decode_string
+
 dash.register_page(
     __name__,
-    title='Swiss Population',
-    name='Swiss Population by Kanton',
+    name='Swiss Population',
+    title='Swiss Population Data',
     description='Map of Switzerland with Population, Area and Density by Kanton.',
     path="/swiss",
 )
@@ -17,8 +19,11 @@ TEMP_DIR = 'temp'
 DATA_OPTIONS = ["Population", "Area", "Density"]
 
 layout = [
-    html.H3(children='Swiss Data'),
-    dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-5g'),
+    html.H3(children='Swiss Population'),
+    html.Div([
+        dcc.Dropdown(["Kantone", "Bezirke", "Gemeinden"], 'Kantone', className='ddown', id='dropdown-shape'),
+        dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-5g'),
+    ], className="ddmenu"),
     dcc.Loading(
         id="loading",
         type="circle",
@@ -35,58 +40,46 @@ layout = [
     ], className='source-data')
 ]
 
-
-# Correct wrong string encoding, TODO: Check data source / import
-def decode_string(s):
-    if isinstance(s, str):
-        return s.encode('latin1').decode('utf8')
-    return s
-
-# Set the file path to the shapefile
-# shapefile = "static/Gemeinden.shp"
-shapefile = "static/Grenzen.shp/swissBOUNDARIES3D_1_5_TLM_KANTONSGEBIET.shp"
-
-# load Shape file into GeoDataFrame
-gdf = gpd.GeoDataFrame.from_file(shapefile)
-
-# Convert Polygon Z to Polygon
-# gdf['geometry'] = gdf['geometry'].apply(lambda p: Polygon([(x, y) for x, y, z in p.exterior.coords]))
-
-# Convert to WGS84
-gdf.crs = "EPSG:2056"  # Use CH1903+ / LV95 (epsg:2056)
-# Use WGS84 (epsg:4326) as the geographic coordinate system
-gdf = gdf.to_crs(epsg=4326)
-
-# Convert the GeoDataFrame to GeoJSON
-geojson_data = json.loads(gdf.to_json())
-print("GeoJSON data loaded")
-
-# Correct string encoding for the NAME column
-gdf['NAME'] = gdf['NAME'].apply(decode_string)
-
+# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
+shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5000, 10000]],
+                    "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA", [100000, 500, 10000]],
+                    "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA", [100000, 200, 10000]]}
 
 @callback(
     Output('graph-content-2', 'figure'),
     Input('dropdown-5g', 'value'),
+    Input('dropdown-shape', 'value'),
 )
-def update_graph(api_id="Population"):
+def update_graph(api_id="Population", shape_type="Kantone"):
+    # if api_id is None or shape_type is None:
+    #     return
 
-    #if api_id == 'Population':
+    filepath = shape_files_dict.get(shape_type)[0]
+    print("Loading Shape data...")
+    gdf = gpd.read_file(filepath)
+    print("Converting to GeoJSON...")
+    geojson_data = json.loads(gdf.to_json())
+
+    area_name = shape_files_dict.get(shape_type)[1]
+    z_max_options = shape_files_dict.get(shape_type)[2]
+
+    # api_id == 'Population'
     fact = gdf['EINWOHNERZ']
-    z_max = 1500000
+    z_max = z_max_options[0]
     if api_id == 'Area':
-        fact = gdf['KANTONSFLA']
-        z_max = 750000
+        fact = gdf[area_name] / 100  # to km^2
+        z_max = z_max_options[1]
     if api_id == 'Density':
-        fact = gdf['EINWOHNERZ'] / gdf['KANTONSFLA']
-        z_max = 10
+        fact = gdf['DICHTE']
+        z_max = z_max_options[2]
 
     # Create a figure
     fig = go.Figure(go.Choroplethmapbox(geojson=geojson_data, locations=gdf.index, z=fact,
                                         colorscale="Viridis", zmin=0, zmax=z_max,
                                         marker_opacity=0.5, marker_line_width=0,
-                                        hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>',
-                                        customdata=gdf['NAME'].values.reshape(-1, 1)))
+                                        customdata=gdf['NAME'].values.reshape(-1, 1),
+                                        hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>'
+                                        ))
 
     # Set the mapbox style and center
     fig.update_layout(mapbox_style="carto-positron",

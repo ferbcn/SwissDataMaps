@@ -10,17 +10,17 @@ from dash import html, dcc, callback, Output, Input
 
 dash.register_page(
     __name__,
-    title='Open Street Maps POIs',
     name='Open Street Maps',
+    title='Open Street Maps POIs',
     description='Open Street Maps Points of Interest collected via the Overpass API using python overpy',
     path='/osm',
     order=20
 )
 
 tag_key_value_list = {"restaurant": "amenity", "bank": "amenity", "bar": "amenity", "fuel": "amenity",
-                      "fast_food": "amenity", "atm": "amenity", "hospital": "amenity", "stripclub": "amenity",
+                      "fast_food": "amenity", "atm": "amenity", "hospital": "amenity", "pharmacy": "amenity",
                       "library": "amenity", "books": "shop", "park": "leisure", "station": "public_transport",
-                      "alcohol": "shop", "erotic": "shop"}
+                      "alcohol": "shop", "bakery": "shop", "bicycle": "shop", "post_office": "amenity"}
 tag_keys = list(set(tag_key_value_list.values()))
 tag_values = list(set(tag_key_value_list.keys()))
 
@@ -96,6 +96,8 @@ def get_data_overpy(country_iso_a2, tag_key, tag_value):
     Input('dropdown-value', 'value')
 )
 def update_graph(tag_value="shop"):
+    if tag_value not in tag_values:
+        tag_value = 'books'
     tag_key = tag_key_value_list[tag_value]
 
     data_dict = get_data_overpy('CH', tag_key, tag_value)
@@ -106,7 +108,8 @@ def update_graph(tag_value="shop"):
     # Create a pandas DataFrame from the dictionary
     df = pd.DataFrame(data_dict)
     fig = px.density_mapbox(df, lat=data_dict["lats"], lon=data_dict["longs"], radius=10,
-                            mapbox_style="open-street-map", custom_data=['names', 'websites'])
+                            mapbox_style="open-street-map", color_continuous_scale="inferno",
+                            custom_data=['names', 'websites'])
     fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
     fig.update_layout(title_text=f"{tag_value.capitalize()}: {total_points} points", title_font={'size': 12})
     fig.update_layout(coloraxis_showscale=False,

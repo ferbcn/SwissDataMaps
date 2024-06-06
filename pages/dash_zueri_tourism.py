@@ -11,8 +11,8 @@ from dash import callback, Output, Input, dcc, html
 
 dash.register_page(
     __name__,
+    name='Zürich POIs',
     title='Zürich Tourism POIs',
-    name='Zürich Tourism',
     description='Points of Interest in Zürich retrieved from the Zürich Tourism API',
     path="/zueri",
     order=30
@@ -28,7 +28,7 @@ class ZueriData:
         self.temp_dir = TEMP_DIR
 
     def get_endpoint_list(self):
-        print('Retrieving API endpoints...')
+        print('Retrieving Zürich Tourism API endpoints...')
         api_endpoints_raw = requests.get(self.end_url)
         api_ids_names = {item.get('id'): item.get('name').get('de') for item in api_endpoints_raw.json() if not item.get('name').get('de') is None}
         return api_ids_names
@@ -110,7 +110,9 @@ def update_graph(api_id=101):
     # Create a pandas DataFrame from the dictionary
     df = pd.DataFrame(data_dict)
     fig = px.density_mapbox(df, lat=lats, lon=longs, radius=10,
-                            mapbox_style="open-street-map", custom_data=['names', 'infos'])
+                            mapbox_style="open-street-map", color_continuous_scale="spectral",
+                            custom_data=['names', 'infos']
+                            )
     fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
     fig.update_layout(title_text=f"{api_ids_names.get(str(api_id))}: {total_points} points", title_font={'size': 12})
     fig.update_layout(coloraxis_showscale=False,

@@ -2,11 +2,11 @@ import os
 import dash
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
-from link_maker import build_page_registry
+from link_maker import build_page_registry, build_nav_links
 
 external_stylesheets = [
     'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
-    'static/style.css'
+    'assets/style.css'
 ]
 
 external_scripts = [
@@ -44,23 +44,7 @@ def show_hide_div(pathname):
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),  # used to track the current location and show home page links
 
-    html.Nav([
-        html.Button(className="navbar-toggler", type="button", **{
-            'data-toggle': "collapse",
-            'data-target': "#navbarToggler",
-            'aria-controls': "navbarToggler",
-            'aria-expanded': "false",
-            'aria-label': "Toggle navigation"
-        }, children=[
-            html.Span(className="navbar-toggler-icon")
-        ]),
-
-        html.Div(className="collapse navbar-collapse", id="navbarToggler", children=[
-            html.Div(
-                dcc.Link(f"{page['name']}", href=page["relative_path"], className="nav-item nav-link"),
-            ) for page in dash.page_registry.values()
-        ])
-    ], className="navbar navbar-expand-lg navbar-light bg-light"),
+    build_nav_links(),
 
     html.Br(),
     dash.page_container,
@@ -68,7 +52,7 @@ app.layout = html.Div([
     html.Div(id='my-div', children=build_page_registry()),  # This div is used to show all links in the home page
 
     html.Div(
-        children='Copyright © 2023 Swiss Geo Data Maps. All rights reserved.',
+        children='Copyright © 2024 Swiss Geo Data Maps. All rights reserved.',
         className='copyrightfooter'
     ),
     html.A(
