@@ -46,8 +46,9 @@ app.layout = html.Div([
 
     build_nav_links(),
 
-    html.Br(),
-    dash.page_container,
+    html.Div([
+        html.Div(dash.page_container, className='container-main'),
+    ], className='container-outer'),
 
     html.Div(id='my-div', children=build_page_registry()),  # This div is used to show all links in the home page
 

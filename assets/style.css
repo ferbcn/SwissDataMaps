@@ -13,6 +13,22 @@ body{
     background-color: #fff;
     width: 100%;
 }
+.container-outer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+
+.container-main{
+    margin-top: 10px;
+    width: 100%;
+    max-width: 1000px;
+}
 
 a{
     color: var(--primary);
@@ -34,7 +50,7 @@ p{
     flex-direction: row;
     justify-content: flex-start;
     align-content: flex-end;
-    padding: 5vw;
+    padding: 0 50px;
     width: 90%;
 }
 
@@ -42,13 +58,14 @@ p{
     float: left;
     width: 20vw;
     height: 20vw;
+    max-width: 200px;
+    max-height: 200px;
     margin-right: 20px;
     box-shadow: 0 2px 4px rgb(0,0,0,0.5);
 }
 
 .long-text{
     padding-left: 2vw;
-    font-size: 16px;
     text-align: left;
 }
 
