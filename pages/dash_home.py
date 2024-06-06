@@ -21,7 +21,8 @@ layout = html.Div([
                'Welcome to the Swiss Geo Data Maps Project. '
                'We aim to provide open source geospatial data visualizations making it easy for everyone '
                'to access and understand geospatial data and information.',
-            html.P('We are constantly working on new maps and features, so stay tuned!')], className="long-text")]),
+               html.P('We are constantly working on new maps and features, so stay tuned!')], className="long-text"),
+            ], className="logo-text"),
     ], className="logo-text-box"),
 
 ])

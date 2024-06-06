@@ -63,6 +63,3 @@ app.layout = html.Div([
         className='pagefooter'
     ),
 ])
-
-# if __name__ == '__main__':
-#     app.run(debug=True)

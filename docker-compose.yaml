@@ -1,5 +1,5 @@
 services:
-  zueri-navi:
+  swiss-maps:
     build:
       context: .
       dockerfile: Dockerfile

@@ -8,23 +8,18 @@ import plotly.express as px
 import dash
 from dash import html, dcc, callback, Output, Input
 
-from osm_overpy import get_data_overpy
+from osm_overpy import get_data_overpy, get_tag_keys_values_options
 
 dash.register_page(
     __name__,
     name='Open Street Maps',
     title='Swiss Open Street Maps POIs',
-    description='Open Street Maps Points of Interest collected via the Overpass API using python overpy',
+    description='Open Street Maps Points of Interest collected via the Overpass API using python overpy.',
     path='/osm',
     image_url='assets/osm.png'
 )
 
-tag_key_value_list = {"restaurant": "amenity", "bank": "amenity", "bar": "amenity", "fuel": "amenity",
-                      "fast_food": "amenity", "atm": "amenity", "hospital": "amenity", "pharmacy": "amenity",
-                      "library": "amenity", "books": "shop", "park": "leisure", "station": "public_transport",
-                      "alcohol": "shop", "bakery": "shop", "bicycle": "shop", "post_office": "amenity"}
-tag_keys = list(set(tag_key_value_list.values()))
-tag_values = list(set(tag_key_value_list.keys()))
+tag_keys, tag_values, tag_key_value_list = get_tag_keys_values_options()
 
 layout = html.Div([
     html.H3(children='Open Street Maps POIs'),

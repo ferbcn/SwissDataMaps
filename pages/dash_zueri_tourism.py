@@ -13,7 +13,7 @@ dash.register_page(
     __name__,
     name='Zürich POIs',
     title='Zürich Tourism POIs',
-    description='Points of Interest in Zürich retrieved from the Zürich Tourism API',
+    description='Points of Interest in Zürich retrieved from the Zürich Tourism API.',
     path="/zueri",
     image_url='assets/zueri.png',
     order=10
