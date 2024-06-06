@@ -137,8 +137,9 @@ a:hover{
 
 .Select-control{
     text-align: left;
-    box-shadow: 0 2px 4px var(--primary);
+    box-shadow: 0 2px 4px rgb(0,0,0,0.5);
     border-radius: 0;
+    cursor: pointer;
 }
 
 .source-data {
