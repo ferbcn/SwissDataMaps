@@ -4,6 +4,16 @@ import time
 import overpy
 
 
+def get_tag_keys_values_options():
+    tag_key_value_list = {"restaurant": "amenity", "bank": "amenity", "bar": "amenity", "fuel": "amenity",
+                          "fast_food": "amenity", "atm": "amenity", "hospital": "amenity", "pharmacy": "amenity",
+                          "library": "amenity", "books": "shop", "park": "leisure", "station": "public_transport",
+                          "alcohol": "shop", "bakery": "shop", "bicycle": "shop", "post_office": "amenity"}
+    tag_keys = list(set(tag_key_value_list.values()))
+    tag_values = list(set(tag_key_value_list.keys()))
+    return tag_keys, tag_values, tag_key_value_list
+
+
 def get_data_overpy(country_iso_a2, tag_key, tag_value):
     names = []
     lats = []

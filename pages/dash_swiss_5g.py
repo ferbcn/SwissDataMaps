@@ -6,7 +6,6 @@ from dash import html, dcc, callback, Output, Input
 import geopandas as gpd
 import plotly.graph_objects as go
 
-ddown_options = ["-", "Kantone", "Bezirke", "Gemeinden"]
 
 dash.register_page(
     __name__,
@@ -16,6 +15,21 @@ dash.register_page(
     path='/antenna',
     image_url='assets/antenna.png'
 )
+
+# Load Antenna data from JSON file
+print("Loading Antenna data...")
+ant_gdf = gpd.read_file("static/ant_gdf.json")
+count = len(ant_gdf)
+
+ddown_options = ["-", "Kantone", "Bezirke", "Gemeinden"]
+
+# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
+shape_files_dict = {"Kantone": "static/gdf_kan.json",
+                    "Bezirke": "static/gdf_bez.json",
+                    "Gemeinden": "static/gdf_gem.json"}
+
+# TODO: maybe load all GDFs into memory in one go on startup
+
 
 layout = html.Div([
     html.H3(children='5G Network Coverage'),
@@ -48,25 +62,12 @@ layout = html.Div([
     ], className='source-data')
 ])
 
-# Load Antenna data from JSON file
-print("Loading Antenna data...")
-ant_gdf = gpd.read_file("static/ant_gdf.json")
-count = len(ant_gdf)
-
-# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
-shape_files_dict = {"Kantone": "static/gdf_kan.json",
-                    "Bezirke": "static/gdf_bez.json",
-                    "Gemeinden": "static/gdf_gem.json"}
-
-# TODO: maybe load all GDFs into memory in one go on startup
-
 @callback(
     Output('graph-content-ant', 'figure'),
     Input('layer-toggle', 'value'),
     Input('dropdown-shape', 'value'),
 )
 def update_graph(selected_layers=None, shape_type=None):
-
 
     # Create a pandas DataFrame from the dictionary
     if '5G' in selected_layers:
