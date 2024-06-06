@@ -13,7 +13,7 @@ from osm_overpy import get_data_overpy, get_tag_keys_values_options
 dash.register_page(
     __name__,
     name='Open Street Maps',
-    title='Swiss Open Street Maps POIs',
+    title='Open Street Maps POIs',
     description='Open Street Maps Points of Interest collected via the Overpass API using python overpy.',
     path='/osm',
     image_url='assets/osm.png'

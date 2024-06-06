@@ -12,7 +12,7 @@ import geopandas as gpd
 dash.register_page(
     __name__,
     name='Open Street Maps Density',
-    title='Swiss Open Street Maps POI Densities',
+    title='Open Street Maps POI Densities',
     description='Open Street Maps Points of Interest collected via the Overpass API using python overpy augmented with population data and density maps.',
     path='/density',
     image_url='assets/density.png'
@@ -25,7 +25,8 @@ ddown_options = ["-", "Kantone", "Bezirke", "Gemeinden"]
 # Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
 shape_files_dict = {"Kantone": "static/gdf_kan.json",
                     "Bezirke": "static/gdf_bez.json",
-                    "Gemeinden": "static/gdf_gem.json"}
+                    "Gemeinden": "static/gdf_gem.json",
+                    }
 
 layout = html.Div([
     html.H3(children='Swiss Open Street Maps POI densities'),

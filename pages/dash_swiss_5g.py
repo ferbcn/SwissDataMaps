@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 dash.register_page(
     __name__,
     name='Swiss 5G Coverage',
-    title='Swiss 5G-Network Coverage',
+    title='5G-Network Coverage',
     description='Points of 5G Antenna Coverage in Switzerland.',
     path='/antenna',
     image_url='assets/antenna.png'
