@@ -14,7 +14,7 @@ dash.register_page(
     __name__,
     name='Open Street Maps',
     title='Swiss Open Street Maps POIs',
-    description='Open Street Maps Points of Interest collected via the Overpass API using python overpy',
+    description='Open Street Maps Points of Interest collected via the Overpass API using python overpy.',
     path='/osm',
     image_url='assets/osm.png'
 )
