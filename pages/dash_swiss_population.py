@@ -5,8 +5,6 @@ from dash import callback, Output, Input, dcc, html
 
 import geopandas as gpd
 
-from string_decode import decode_string
-
 dash.register_page(
     __name__,
     name='Swiss Population',
@@ -17,12 +15,19 @@ dash.register_page(
 )
 
 TEMP_DIR = 'temp'
+
+# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
+shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5000, 10000]],
+                    "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA", [100000, 500, 10000]],
+                    "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA", [100000, 200, 10000]]}
+
+ddown_options = list(shape_files_dict.keys())
 DATA_OPTIONS = ["Population", "Area", "Density"]
 
 layout = [
     html.H3(children='Swiss Population'),
     html.Div([
-        dcc.Dropdown(["Kantone", "Bezirke", "Gemeinden"], 'Kantone', className='ddown', id='dropdown-shape'),
+        dcc.Dropdown(ddown_options, 'Kantone', className='ddown', id='dropdown-shape'),
         dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-5g'),
     ], className="ddmenu"),
     dcc.Loading(
@@ -41,11 +46,6 @@ layout = [
     ], className='source-data')
 ]
 
-# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
-shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5000, 10000]],
-                    "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA", [100000, 500, 10000]],
-                    "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA", [100000, 200, 10000]]}
-
 @callback(
     Output('graph-content-2', 'figure'),
     Input('dropdown-5g', 'value'),
@@ -59,7 +59,7 @@ def update_graph(api_id="Population", shape_type="Kantone"):
     print("Loading Shape data...")
     gdf = gpd.read_file(filepath)
     print("Converting to GeoJSON...")
-    geojson_data = json.loads(gdf.to_json())
+    geojson_data = json.loads(gdf.to_json())    # Needed for Choroplethmapbox
 
     area_name = shape_files_dict.get(shape_type)[1]
     z_max_options = shape_files_dict.get(shape_type)[2]
@@ -74,6 +74,7 @@ def update_graph(api_id="Population", shape_type="Kantone"):
         fact = gdf['DICHTE']
         z_max = z_max_options[2]
 
+    print("Drawing Map...")
     # Create a figure
     fig = go.Figure(go.Choroplethmapbox(geojson=geojson_data, locations=gdf.index, z=fact,
                                         colorscale="Viridis", zmin=0, zmax=z_max,
@@ -81,19 +82,25 @@ def update_graph(api_id="Population", shape_type="Kantone"):
                                         customdata=gdf['NAME'].values.reshape(-1, 1),
                                         hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>'
                                         ))
+    # Add labels to the shapes
+    fig.add_trace(
+        go.Scattermapbox(
+            lat=gdf.geometry.centroid.y,
+            lon=gdf.geometry.centroid.x,
+            mode='text',
+            text=gdf['NAME'],
+            textfont=dict(size=12),
+            hoverinfo='none',
+            showlegend=False
+        )
+    )
 
     # Set the mapbox style and center
     fig.update_layout(mapbox_style="carto-positron",
                       mapbox_zoom=7,
                       mapbox_center={"lat": 47, "lon": 8.2},
                       autosize=True,
-                      margin=dict(
-                          l=20,  # left margin
-                          r=20,  # right margin
-                          b=10,  # bottom margin
-                          t=40,  # top margin
-                          pad=10  # padding
-                        ),
+                      margin=dict(pad=20),
                       )
 
     return fig
