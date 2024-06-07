@@ -1,4 +1,5 @@
 import json
+
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -12,7 +13,7 @@ import geopandas as gpd
 dash.register_page(
     __name__,
     name='Open Street Maps Density',
-    title='Swiss Open Street Maps POI Densities',
+    title='Open Street Maps POI Densities',
     description='Open Street Maps Points of Interest collected via the Overpass API using python overpy augmented with population data and density maps.',
     path='/density',
     image_url='assets/density.png'
@@ -20,12 +21,14 @@ dash.register_page(
 
 tag_keys, tag_values, tag_key_value_list = get_tag_keys_values_options()
 
-ddown_options = ["-", "Kantone", "Bezirke", "Gemeinden"]
-
 # Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
-shape_files_dict = {"Kantone": "static/gdf_kan.json",
+shape_files_dict = {"-": "",
+                    "Kantone": "static/gdf_kan.json",
                     "Bezirke": "static/gdf_bez.json",
-                    "Gemeinden": "static/gdf_gem.json"}
+                    "Gemeinden": "static/gdf_gem.json",
+                    }
+
+ddown_options = list(shape_files_dict.keys())
 
 layout = html.Div([
     html.H3(children='Swiss Open Street Maps POI densities'),
@@ -33,7 +36,7 @@ layout = html.Div([
         html.Div([
             "Fact:",
             dcc.Dropdown(tag_values, 'books', className='ddown', id='dropdown-value'),
-            ], className='ddmenu'),
+        ], className='ddmenu'),
         html.Div([
             "Scope:",
             dcc.Dropdown(ddown_options, '-', className='ddown', id='dropdown-shape')
@@ -54,6 +57,27 @@ layout = html.Div([
     ], className='source-data')
 ])
 
+
+def count_points_in_polygon(poi_df, gdf):
+    print("Counting POIs in each shape...")
+    # Convert the DataFrame to a GeoDataFrame
+    poi_gdf = gpd.GeoDataFrame(poi_df, geometry=gpd.points_from_xy(poi_df.longs, poi_df.lats))
+    poi_gdf.crs = gdf.crs
+
+    # Perform a spatial join operation
+    joined_gdf = sjoin(poi_gdf, gdf, how='inner', predicate='within')
+
+    # Count the number of points in each polygon
+    counts = joined_gdf['index_right'].value_counts()
+
+    # Update the 'COUNT' column in the original GeoDataFrame
+    gdf['COUNT'] = counts
+    gdf['COUNT'] = gdf['COUNT'].fillna(0)
+
+    print("Calculating density...")
+    gdf['OSM_DICHTE'] = gdf['COUNT'] / gdf['DICHTE'] * 1000
+    z_max = gdf['OSM_DICHTE'].max()
+    return gdf, z_max
 
 
 @callback(
@@ -78,7 +102,8 @@ def update_graph(tag_value="shop", shape_type=None):
                             mapbox_style="open-street-map", color_continuous_scale="oxy",
                             custom_data=['names', 'websites'])
 
-    fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
+    fig.update_traces(
+        hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
     fig.update_layout(title_text=f"{tag_value.capitalize()}: {total_points} points", title_font={'size': 12})
     fig.update_layout(coloraxis_showscale=False,
                       autosize=True,
@@ -88,7 +113,9 @@ def update_graph(tag_value="shop", shape_type=None):
                           b=10,
                           t=40,
                           pad=10  # padding
-                          ),
+                      ),
+                      paper_bgcolor='rgba(0,0,0,0.0)',
+                      font=dict(color='lightgray'),
                       )
     # Draw map with shape data
     if shape_type in ddown_options[1:]:
@@ -99,24 +126,8 @@ def update_graph(tag_value="shop", shape_type=None):
         print("Converting to GeoJSON...")
         geojson_data = json.loads(gdf.to_json())
 
-        print("Counting POIs in each shape...")
-        # Convert the DataFrame to a GeoDataFrame
-        poi_gdf = gpd.GeoDataFrame(poi_df, geometry=gpd.points_from_xy(poi_df.longs, poi_df.lats))
-        poi_gdf.crs = gdf.crs
-
-        # Perform a spatial join operation
-        joined_gdf = sjoin(poi_gdf, gdf, how='inner', predicate='within')
-
         # Count the number of points in each polygon
-        counts = joined_gdf['index_right'].value_counts()
-
-        # Update the 'COUNT' column in the original GeoDataFrame
-        gdf['COUNT'] = counts
-        gdf['COUNT'] = gdf['COUNT'].fillna(0)
-
-        print("Calculating density...")
-        gdf['OSM_DICHTE'] = gdf['COUNT'] / gdf['EINWOHNERZ'] * 1000
-        z_max = gdf['OSM_DICHTE'].max()
+        gdf, z_max = count_points_in_polygon(poi_df, gdf)
 
         print("Drawing Choroplethmapbox...")
         fig.add_trace(

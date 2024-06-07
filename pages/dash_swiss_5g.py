@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 dash.register_page(
     __name__,
     name='Swiss 5G Coverage',
-    title='Swiss 5G-Network Coverage',
+    title='5G-Network Coverage',
     description='Points of 5G Antenna Coverage in Switzerland.',
     path='/antenna',
     image_url='assets/antenna.png'
@@ -79,7 +79,7 @@ def update_graph(selected_layers=None, shape_type=None):
                             mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=7,
                             )
     #fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
-    fig.update_layout(title_text=f"{count} antennas", title_font={'size': 12})
+    fig.update_layout(title_text=f"{count} antennas", title_font={'size': 12, 'color': 'lightgray'})
     fig.update_layout(coloraxis_showscale=False,
                       autosize=True,
                       margin=dict(
@@ -89,6 +89,7 @@ def update_graph(selected_layers=None, shape_type=None):
                           t=40,  # top margin
                           pad=10  # padding
                           ),
+                      paper_bgcolor='rgba(0,0,0,0)',
                       )
 
     # Draw map with shape data

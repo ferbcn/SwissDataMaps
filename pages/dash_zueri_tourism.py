@@ -113,10 +113,10 @@ def update_graph(api_id=101):
     fig = px.density_mapbox(df, lat=lats, lon=longs, radius=10,
                             mapbox_style="open-street-map", color_continuous_scale="spectral",
                             custom_data=['names', 'infos'],
-                            center=dict(lat=47.37, lon=8.53), zoom=12
+                            center=dict(lat=47.37, lon=8.53), zoom=12,
                             )
     fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
-    fig.update_layout(title_text=f"{api_ids_names.get(str(api_id))}: {total_points} points", title_font={'size': 12})
+    fig.update_layout(title_text=f"{api_ids_names.get(str(api_id))}: {total_points} points", title_font={'size': 12, 'color': 'lightgray'})
     fig.update_layout(coloraxis_showscale=False,
                       autosize=True,
                       margin=dict(
@@ -126,6 +126,7 @@ def update_graph(api_id=101):
                           t=40,  # top margin
                           pad=10  # padding
                         ),
+                      paper_bgcolor='rgba(0,0,0,0.0)'
                       )
 
     return fig
