@@ -7,8 +7,8 @@ import geopandas as gpd
 
 dash.register_page(
     __name__,
-    name='Swiss Population',
-    title='Swiss Population Map',
+    name='Population Map',
+    title='Swiss Regional Population Maps',
     description='Map of Switzerland with Population, Area and Density by Kanton, Bezirk and Gemeinde.',
     path="/swiss",
     image_url='assets/swiss.png',

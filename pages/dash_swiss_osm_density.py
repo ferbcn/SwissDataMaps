@@ -12,8 +12,8 @@ import geopandas as gpd
 
 dash.register_page(
     __name__,
-    name='Open Street Maps Density',
-    title='Open Street Maps POI Densities',
+    name='Open Street Density Maps',
+    title='Open Street Maps Swiss Population Densities',
     description='Open Street Maps Points of Interest collected via the Overpass API using python overpy augmented with population data and density maps.',
     path='/density',
     image_url='assets/density.png'
@@ -31,14 +31,14 @@ shape_files_dict = {"-": "",
 ddown_options = list(shape_files_dict.keys())
 
 layout = html.Div([
-    html.H3(children='Swiss Open Street Maps POI densities'),
+    html.H3(children='Open Street Maps and Swiss Population Densities'),
     html.Div([
         html.Div([
             "Fact:",
             dcc.Dropdown(tag_values, 'books', className='ddown', id='dropdown-value'),
         ], className='ddmenu'),
         html.Div([
-            "Scope:",
+            "Pop. by:",
             dcc.Dropdown(ddown_options, '-', className='ddown', id='dropdown-shape')
         ], className='ddmenu')
     ], className='ddmenu'),
@@ -85,12 +85,12 @@ def count_points_in_polygon(poi_df, gdf):
     Input('dropdown-value', 'value'),
     Input('dropdown-shape', 'value'),
 )
-def update_graph(tag_value="shop", shape_type=None):
+def update_graph(tag_value="shop", shape_type=None, country_code="CH"):
     if tag_value not in tag_values:
         tag_value = 'books'
     tag_key = tag_key_value_list[tag_value]
 
-    data_dict = get_data_overpy('CH', tag_key, tag_value)
+    data_dict = get_data_overpy(country_code, tag_key, tag_value)
 
     total_points = len(data_dict["names"])
     print(f"Plotting nodes for {tag_value}: {total_points}")

@@ -7,8 +7,8 @@ from scipy.interpolate import griddata
 
 dash.register_page(
     __name__,
-    name='Swiss 3D Topographic Map',
-    title='3D Switzerland',
+    name='Topographic Map',
+    title='Swiss 3D Topographic Map',
     description='3D Topographic surface representation of Switzerland.',
     path="/map3d",
     image_url='assets/map3d.png'
@@ -23,7 +23,7 @@ ddown_options = list(shape_files_dict.keys())
 ddown_methods = ["linear", "cubic", "nearest"]
 
 layout = [
-    html.H3(children='Swiss 3D-Map'),
+    html.H3(children='Swiss Topographic Map'),
     html.Div([
         dcc.Dropdown(ddown_options, 'Kantone', className='ddown', id='dropdown-shape'),
         dcc.Dropdown(ddown_methods, "linear", className='ddown', id='dropdown-method')

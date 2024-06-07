@@ -14,13 +14,22 @@ def get_tag_keys_values_options():
     return tag_keys, tag_values, tag_key_value_list
 
 
+def get_country_codes():
+    country_codes = [
+        "BE", "BG", "CZ", "DK", "DE", "EE", "IE", "EL", "ES", "FR", "HR", "IT", "CY",
+        "LV", "LT", "LU", "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI",
+        "SE", "GR", "GB", "CH", "NO", "IS", "RS", "ME", "MK", "AL", "BA"
+    ]
+    return sorted(country_codes)
+
+
 def get_data_overpy(country_iso_a2, tag_key, tag_value):
     names = []
     lats = []
     longs = []
     websites = []
     temp_dir = "temp"
-    file_path = f'{temp_dir}/{tag_key}_{tag_value}.json'
+    file_path = f'{temp_dir}/{country_iso_a2}_{tag_key}_{tag_value}.json'
 
     # if cached version exists and is not older than 24h, load from file
     if os.path.exists(file_path) and os.path.getctime(file_path) > time.time() - (60 * 60 * 24):
