@@ -5,9 +5,6 @@ from dash import callback, Output, Input, dcc, html
 
 import geopandas as gpd
 
-import numpy as np
-from scipy.interpolate import griddata
-
 dash.register_page(
     __name__,
     name='Swiss Population',
