@@ -71,6 +71,7 @@ def update_graph(tag_value="shop"):
                           t=40,  # top margin
                           pad=10  # padding
                           ),
+                      paper_bgcolor='rgba(0,0,0,0.0)',  # Set the background color of the map
                       )
 
     return fig

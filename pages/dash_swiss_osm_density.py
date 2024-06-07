@@ -114,6 +114,8 @@ def update_graph(tag_value="shop", shape_type=None):
                           t=40,
                           pad=10  # padding
                       ),
+                      paper_bgcolor='rgba(0,0,0,0.0)',
+                      font=dict(color='lightgray'),
                       )
     # Draw map with shape data
     if shape_type in ddown_options[1:]:

@@ -19,7 +19,7 @@ def build_nav_links():
                 dcc.Link(f"{page['title']}", href=page["relative_path"], className="nav-item nav-link nav-button"),
             ) for page in dash.page_registry.values()
         ])
-    ], className="navbar navbar-expand-lg navbar-light bg-light")
+    ], className="navbar navbar-expand-lg navbar-dark bg-dark")
     return nav_links
 
 

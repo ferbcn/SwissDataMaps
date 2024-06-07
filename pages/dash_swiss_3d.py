@@ -7,9 +7,9 @@ from scipy.interpolate import griddata
 
 dash.register_page(
     __name__,
-    name='Swiss 3D-Map',
-    title='Swiss 3D-Map',
-    description='3D-Map of Switzerland.',
+    name='Swiss 3D Topographic Map',
+    title='3D Switzerland',
+    description='3D Topographic surface representation of Switzerland.',
     path="/map3d",
     image_url='assets/map3d.png'
 )
@@ -20,7 +20,7 @@ shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5
                     "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA", [100000, 200, 10000]]}
 
 ddown_options = list(shape_files_dict.keys())
-ddown_methods = ["linear", "cubic", "nearest", "exact"]
+ddown_methods = ["linear", "cubic", "nearest"]
 
 layout = [
     html.H3(children='Swiss 3D-Map'),
@@ -81,12 +81,20 @@ def update_graph(shape_type="Kantone", method="cubic"):
     X, Y = np.meshgrid(xi, yi)
 
     Z = griddata((x, y), z, (X, Y), method=method)
+
     fig = go.Figure(go.Surface(x=xi, y=yi, z=Z))
+    fig.update_traces(contours_z=dict(show=True, usecolormap=True,
+                                      highlightcolor="limegreen", project_z=True))
     fig.update_layout(scene=dict(aspectratio=dict(x=1.2, y=1.2, z=1),
                                  aspectmode='manual',
                                 xaxis_title='Longitude',
                                 yaxis_title='Latitude',
-                                zaxis_title='Altitude'))
+                                zaxis_title='Altitude'),
+                      margin=dict(l=0, r=0, b=0, t=0),
+                      autosize=True,
+                      paper_bgcolor='rgba(0,0,0,0)',
+                      font=dict(color='lightgray'),
+                      )
 
     return fig
 

@@ -9,9 +9,10 @@ dash.register_page(
     __name__,
     name='Swiss Population',
     title='Swiss Population Map',
-    description='Map of Switzerland with Population, Area and Density by Kanton.',
+    description='Map of Switzerland with Population, Area and Density by Kanton, Bezirk and Gemeinde.',
     path="/swiss",
-    image_url='assets/swiss.png'
+    image_url='assets/swiss.png',
+    order=1
 )
 
 TEMP_DIR = 'temp'
@@ -33,7 +34,7 @@ layout = [
     dcc.Loading(
         id="loading",
         type="circle",
-        children=dcc.Graph(id='graph-content-2', style={'height': '80vh', 'width': '100%'})
+        children=dcc.Graph(id='graph-content-2', className="graph-content", style={'height': '80vh', 'width': '100%'})
     ),
     html.Span(children=[
         html.Pre(children="Source: Open Data"),
@@ -80,26 +81,19 @@ def update_graph(api_id="Population", shape_type="Kantone"):
                                         colorscale="Viridis", zmin=0, zmax=z_max,
                                         marker_opacity=0.5, marker_line_width=0,
                                         customdata=gdf['NAME'].values.reshape(-1, 1),
-                                        hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>'
+                                        hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>',
                                         ))
+
     # Set the mapbox style and center
     fig.update_layout(mapbox_style="carto-positron",
                       mapbox_zoom=7,
                       mapbox_center={"lat": 47, "lon": 8.2},
                       autosize=True,
-                      margin=dict(pad=20),
+                      margin=dict(l=20, r=20, t=10, b=10),
+                      paper_bgcolor='rgba(0,0,0,0.0)',  # Set the background color of the map
+                      coloraxis_showscale=False,  # Hide the color scale
+                      font=dict(color='lightgray'),
                       )
-    # # Add labels to the shapes
-    # fig.add_trace(
-    #     go.Scattermapbox(
-    #         lat=gdf.geometry.centroid.y,
-    #         lon=gdf.geometry.centroid.x,
-    #         mode='text',
-    #         text=gdf['NAME'],
-    #         textfont=dict(size=12),
-    #         hoverinfo='none',
-    #         showlegend=False
-    #     )
-    # )
+
     return fig
 
