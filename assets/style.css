@@ -187,7 +187,7 @@ p{
     width: 100%;
     z-index: 99999999;
     background-color: var(--bg_dark);
-    box-shadow: 0 2px 4px rgb(152, 188, 206, 0.5);
+    /*box-shadow: 0 2px 4px rgb(152, 188, 206, 0.5);*/
 }
 
 .navbar-collapsed{

@@ -16,7 +16,7 @@ def build_nav_links():
 
         html.Div(className="collapse navbar-collapse", id="navbarToggler", children=[
             html.Div(
-                dcc.Link(f"{page['title']}", href=page["relative_path"], className="nav-item nav-link nav-button"),
+                dcc.Link(f"{page['name']}", href=page["relative_path"], className="nav-item nav-link nav-button"),
             ) for page in dash.page_registry.values()
         ])
     ], className="navbar navbar-expand-lg navbar-dark bg-dark")
@@ -27,7 +27,7 @@ def build_page_registry():
     links = html.Div([
         dcc.Link(
             html.Div([
-                html.H4(f"{page['name']}"),
+                html.H4(f"{page['title']}"),
                 html.Div([
                     html.Img(src=page['image_url'], className='link-item-img'),
                     html.P(page['description']),

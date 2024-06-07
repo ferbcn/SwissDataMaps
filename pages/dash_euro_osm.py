@@ -8,12 +8,12 @@ import plotly.express as px
 import dash
 from dash import html, dcc, callback, Output, Input
 
-from osm_overpy import get_data_overpy, get_tag_keys_values_options
+from osm_overpy import get_data_overpy, get_tag_keys_values_options, get_country_codes
 
 dash.register_page(
     __name__,
-    name='Open Street Maps',
-    title='Open Street Maps POIs',
+    name='Open Street Maps Europe',
+    title='Open Street Maps Points of Intersets',
     description='Open Street Maps Points of Interest collected via the Overpass API using python overpy.',
     path='/osm',
     image_url='assets/osm.png'
@@ -21,9 +21,20 @@ dash.register_page(
 
 tag_keys, tag_values, tag_key_value_list = get_tag_keys_values_options()
 
+country_codes = get_country_codes()
+
 layout = html.Div([
     html.H3(children='Open Street Maps POIs'),
-    dcc.Dropdown(tag_values, 'books', className='ddown', id='dropdown-value'),
+    html.Div([
+        html.Div([
+                "Country:",
+                dcc.Dropdown(country_codes, 'CH', className='ddown', id='dropdown-country'),
+            ], className='ddmenu'),
+        html.Div([
+                "Fact:",
+                dcc.Dropdown(tag_values, 'books', className='ddown', id='dropdown-value'),
+            ], className='ddmenu'),
+    ], className='ddmenu'),
     dcc.Loading(
         id="loading",
         type="circle",
@@ -43,14 +54,15 @@ layout = html.Div([
 
 @callback(
     Output('graph-content', 'figure'),
-    Input('dropdown-value', 'value')
+    Input('dropdown-value', 'value'),
+    Input('dropdown-country', 'value'),
 )
-def update_graph(tag_value="shop"):
+def update_graph(tag_value="shop", country_code="CH"):
     if tag_value not in tag_values:
         tag_value = 'books'
     tag_key = tag_key_value_list[tag_value]
 
-    data_dict = get_data_overpy('CH', tag_key, tag_value)
+    data_dict = get_data_overpy(country_code, tag_key, tag_value)
 
     total_points = len(data_dict["names"])
     print(f"Plotting nodes for {tag_value}: {total_points}")
@@ -72,6 +84,7 @@ def update_graph(tag_value="shop"):
                           pad=10  # padding
                           ),
                       paper_bgcolor='rgba(0,0,0,0.0)',  # Set the background color of the map
+                      font=dict(color='lightgray'),
                       )
 
     return fig
