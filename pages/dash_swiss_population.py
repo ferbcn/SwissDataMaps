@@ -5,6 +5,9 @@ from dash import callback, Output, Input, dcc, html
 
 import geopandas as gpd
 
+import numpy as np
+from scipy.interpolate import griddata
+
 dash.register_page(
     __name__,
     name='Swiss Population',
@@ -82,19 +85,6 @@ def update_graph(api_id="Population", shape_type="Kantone"):
                                         customdata=gdf['NAME'].values.reshape(-1, 1),
                                         hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>'
                                         ))
-    # Add labels to the shapes
-    fig.add_trace(
-        go.Scattermapbox(
-            lat=gdf.geometry.centroid.y,
-            lon=gdf.geometry.centroid.x,
-            mode='text',
-            text=gdf['NAME'],
-            textfont=dict(size=12),
-            hoverinfo='none',
-            showlegend=False
-        )
-    )
-
     # Set the mapbox style and center
     fig.update_layout(mapbox_style="carto-positron",
                       mapbox_zoom=7,
@@ -102,6 +92,17 @@ def update_graph(api_id="Population", shape_type="Kantone"):
                       autosize=True,
                       margin=dict(pad=20),
                       )
-
+    # # Add labels to the shapes
+    # fig.add_trace(
+    #     go.Scattermapbox(
+    #         lat=gdf.geometry.centroid.y,
+    #         lon=gdf.geometry.centroid.x,
+    #         mode='text',
+    #         text=gdf['NAME'],
+    #         textfont=dict(size=12),
+    #         hoverinfo='none',
+    #         showlegend=False
+    #     )
+    # )
     return fig
 
