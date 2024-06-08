@@ -98,12 +98,21 @@ def update_graph(tag_value="shop", shape_type=None, country_code="CH"):
     # Create a pandas DataFrame from the dictionary
     poi_df = pd.DataFrame(data_dict)
 
-    fig = px.density_mapbox(poi_df, lat=data_dict["lats"], lon=data_dict["longs"], radius=3,
+    fig = px.density_mapbox(poi_df, lat=data_dict["lats"], lon=data_dict["longs"], radius=5,
                             mapbox_style="open-street-map", color_continuous_scale="oxy",
                             custom_data=['names', 'websites'])
+    # fig = px.scatter_mapbox(poi_df, lat=data_dict["lats"], lon=data_dict["longs"],
+    #                         mapbox_style="open-street-map", color_continuous_scale="oxy",
+    #                         custom_data=['names', 'websites'])
 
     fig.update_traces(
-        hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
+                    # marker=dict(
+                    #     size=10,  # Sets the marker size
+                    #     color='purple',  # Sets the marker color
+                    #     opacity=0.8,  # Sets the marker opacity
+                    # ),
+                    hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}",
+                    )
     fig.update_layout(title_text=f"{tag_value.capitalize()}: {total_points} points", title_font={'size': 12})
     fig.update_layout(coloraxis_showscale=False,
                       autosize=True,
@@ -142,7 +151,7 @@ def update_graph(tag_value="shop", shape_type=None, country_code="CH"):
                 marker_line_width=0,
                 customdata=gdf['NAME'].values.reshape(-1, 1),
                 hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>',
-                visible=True if shape_type in ddown_options[1:] else False
+                visible=True if shape_type in ddown_options[1:] else False,
             )
         )
 
