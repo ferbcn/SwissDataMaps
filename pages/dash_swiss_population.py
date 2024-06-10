@@ -25,7 +25,46 @@ shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5
 ddown_options = list(shape_files_dict.keys())
 DATA_OPTIONS = ["Population", "Area", "Density"]
 
+import dash_bootstrap_components as dbc
+from dash import Input, Output, State, html
+
+modal = html.Div(
+    [
+        dbc.Button("Open modal", id="open", n_clicks=0, style={'display': 'none'}),
+        dbc.Modal(
+            [
+                dbc.ModalHeader(dbc.ModalTitle("Long processing time"), style={'color': 'black'}),
+                dbc.ModalBody("Hold on, Gemeinde dataset takes more time to process...", style={'color': 'black'}),
+                dbc.ModalFooter(
+                    dbc.Button(
+                        "Ok", id="close", className="ms-auto", n_clicks=0
+                    )
+                ),
+            ],
+            id="modal",
+            centered=True,
+            is_open=False,
+        ),
+    ]
+)
+
+
+@callback(
+    Output("modal", "is_open"),
+    [Input("open", "n_clicks"),
+     Input("close", "n_clicks"),
+     Input("interval-component", "n_intervals")],
+    [State("modal", "is_open")],
+)
+def toggle_modal(n1, n2, n3, is_open):
+    if n1 or n2 or n3:
+        return not is_open
+    return is_open
+
+
 layout = [
+    modal,
+    dcc.Interval(id='interval-component', interval=1*1000, n_intervals=0),  # 1*1000 = 1 second
     html.H3(children='Swiss Population'),
     html.Div([
         dcc.Dropdown(ddown_options, 'Kantone', className='ddown', id='dropdown-shape'),
@@ -49,6 +88,7 @@ layout = [
 
 @callback(
     Output('graph-content-2', 'figure'),
+    Output('interval-component', 'max_intervals'),  # Add this line
     Input('dropdown-5g', 'value'),
     Input('dropdown-shape', 'value'),
 )
@@ -95,5 +135,5 @@ def update_graph(api_id="Population", shape_type="Kantone"):
                       font=dict(color='lightgray'),
                       )
 
-    return fig
+    return fig, 1
 

@@ -157,9 +157,10 @@ p{
     top:0;
     width: 100%;
     z-index: 99999999;
-    background-color: var(--bg_dark);
+    opacity: 0.95;
     /*box-shadow: 0 2px 4px rgb(152, 188, 206, 0.5);*/
 }
+
 
 .nav-button{
     color: var(--text_color);
@@ -168,7 +169,7 @@ p{
 }
 
 .nav-button:hover{
-    background-color: var(--text_color);
+    background-color: rgb(255,255,255,1);
     color: var(--bg_dark);
 }
 
@@ -264,3 +265,19 @@ p{
     }
 }
 
+.modal-autohide {
+    animation: fadeOut 2s forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}

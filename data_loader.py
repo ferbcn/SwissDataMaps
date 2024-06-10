@@ -1,6 +1,49 @@
+import os
 from string_decode import decode_string
 import geopandas as gpd
 import json
+import requests
+import time
+
+TEMP_DIR = "temp"
+
+
+class ZueriData:
+    def __init__(self):
+        self.end_url = "https://www.zuerich.com/en/api/v2/data"
+        self.api_url = self.end_url + "?id="
+        self.temp_dir = TEMP_DIR
+
+    def get_endpoint_list(self):
+        print('Retrieving Zürich Tourism API endpoints...')
+        try:
+            api_endpoints_raw = requests.get(self.end_url)
+            api_ids_names = {item.get('id'): item.get('name').get('de') for item in api_endpoints_raw.json() if not item.get('name').get('de') is None}
+        except Exception as e:
+            print(f'Error: {e}')
+            api_ids_names = {101: 'Error Retrieving data...'}
+        return api_ids_names
+
+    def get_api_data(self, api_id=101):
+        print(f'Checking for cached version of API endpoint with id {api_id}')
+        # Check if the data is already cached and not older than 24h
+        if os.path.exists(f'{self.temp_dir}/{api_id}.json') and os.path.getctime(f'{self.temp_dir}/{api_id}.json') > time.time() - (60 * 60 * 24):
+            print('Loading cached data...')
+            with open(f'{self.temp_dir}/{api_id}.json', 'r') as f:
+                data = json.load(f)
+            return data
+        else:
+            print('No cached data found, retrieving fresh API data...')
+            try:
+                response = requests.get(self.api_url + str(api_id))
+                data = response.json()
+                with open(f'{self.temp_dir}/{api_id}.json', 'w') as f:
+                    json.dump(data, f)
+            except Exception as e:
+                print(f'Error: {e}')
+                data = {}
+        return data
+
 
 def load_transform_save_antenna_data():
     # Prepare antenna data
@@ -37,13 +80,8 @@ def load_transform_save_political_shape_geo_data():
     # Use WGS84 (epsg:4326) as the geographic coordinate system
     gdf = gdf.to_crs(epsg=4326)
 
-    # Convert the GeoDataFrame to GeoJSON
-    geojson_data = json.loads(gdf.to_json())
-    print("GeoJSON data loaded")
-
     # print(gdf.columns)
     gdf['DICHTE'] = gdf['EINWOHNERZ'] / gdf['KANTONSFLA'] * 1000  # BEZIRKSFLA, KANTONSFLA
-    z_max = 10000
 
     # Correct string encoding for the NAME column
     gdf['NAME'] = gdf['NAME'].apply(decode_string)
@@ -51,3 +89,43 @@ def load_transform_save_political_shape_geo_data():
     # Save the GeoDataFrame to a GeoJSON file
     gdf.to_file("static/gdf_gem.json", driver='GeoJSON')
 
+
+def load_transform_ev_station_data():
+    # Load Antenna data from JSON file
+    print("Loading EV data...")
+    filename = "static/ev_stations.json"
+    # ev_gdf = gpd.read_file(filename)
+    # count = len(ev_gdf)
+    with open(filename, 'r') as f:
+        data = json.load(f)
+    stations = data.get("EVSEData")[0].get("EVSEDataRecord")
+
+    coordinates = []
+    plug_count = []
+    for station in stations:
+        coordinates.append(station.get("GeoCoordinates").get("Google"))
+        plug_count.append(station.get("Plugs"))
+
+    print("Count: ", len(coordinates))
+    print("Plug count: ", len(plug_count))
+    print("Sample coordinates: ", coordinates[:5])
+    print("Sample plug count: ", plug_count[:5])
+
+    from shapely.geometry import Point
+
+    ev_gdf = gpd.GeoDataFrame()
+    ev_gdf['lat'] = [float(coord.split(" ")[0]) for coord in coordinates]
+    ev_gdf['lon'] = [float(coord.split(" ")[1]) for coord in coordinates]
+    # ev_gdf['plugs'] = plug_count
+    ev_gdf['geometry'] = [Point(xy) for xy in zip(ev_gdf['lon'], ev_gdf['lat'])]
+    ev_gdf.set_geometry('geometry')
+
+    # save to json file
+    ev_gdf.to_file("static/ev_gdf.json", driver='GeoJSON')
+
+
+if __name__ == "__main__":
+    # load_transform_save_antenna_data()
+    # load_transform_save_political_shape_geo_data()
+    load_transform_ev_station_data()
+    print("Done.")

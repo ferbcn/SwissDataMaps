@@ -9,6 +9,8 @@ import requests
 import dash
 from dash import callback, Output, Input, dcc, html
 
+from data_loader import ZueriData
+
 dash.register_page(
     __name__,
     name='Zürich Tourism',
@@ -18,38 +20,6 @@ dash.register_page(
     image_url='assets/zueri.png',
     order=10
 )
-
-TEMP_DIR = 'temp'
-
-
-class ZueriData:
-    def __init__(self):
-        self.end_url = "https://www.zuerich.com/en/api/v2/data"
-        self.api_url = self.end_url + "?id="
-        self.temp_dir = TEMP_DIR
-
-    def get_endpoint_list(self):
-        print('Retrieving Zürich Tourism API endpoints...')
-        api_endpoints_raw = requests.get(self.end_url)
-        api_ids_names = {item.get('id'): item.get('name').get('de') for item in api_endpoints_raw.json() if not item.get('name').get('de') is None}
-        return api_ids_names
-
-    def get_api_data(self, api_id=101):
-        print(f'Checking for cached version of API endpoint with id {api_id}')
-        # Check if the data is already cached and not older than 24h
-        if os.path.exists(f'{self.temp_dir}/{api_id}.json') and os.path.getctime(f'{self.temp_dir}/{api_id}.json') > time.time() - (60 * 60 * 24):
-            print('Loading cached data...')
-            with open(f'{self.temp_dir}/{api_id}.json', 'r') as f:
-                data = json.load(f)
-            return data
-        else:
-            print('No cached data found, retrieving fresh API data...')
-            response = requests.get(self.api_url + str(api_id))
-            data = response.json()
-            with open(f'{self.temp_dir}/{api_id}.json', 'w') as f:
-                json.dump(data, f)
-        return data
-
 
 # Get API endpoints will be used to populate dropdown menu
 api_ids_names = ZueriData().get_endpoint_list()
@@ -107,6 +77,7 @@ def update_graph(api_id=101):
     )
     total_points = len(data_dict.get('names'))
     print(f'Displaying {total_points} items')
+    # show plotly dash modal
 
     # Create a pandas DataFrame from the dictionary
     df = pd.DataFrame(data_dict)
@@ -126,7 +97,7 @@ def update_graph(api_id=101):
                           t=40,  # top margin
                           pad=10  # padding
                         ),
-                      paper_bgcolor='rgba(0,0,0,0.0)'
+                      paper_bgcolor='rgba(0,0,0,0.0)',
                       )
 
     return fig

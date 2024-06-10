@@ -98,7 +98,7 @@ def update_graph(tag_value="shop", shape_type=None, country_code="CH"):
     # Create a pandas DataFrame from the dictionary
     poi_df = pd.DataFrame(data_dict)
 
-    fig = px.density_mapbox(poi_df, lat=data_dict["lats"], lon=data_dict["longs"], radius=5,
+    fig = px.density_mapbox(poi_df, lat=data_dict["lats"], lon=data_dict["longs"], radius=5, zoom=7,
                             mapbox_style="open-street-map", color_continuous_scale="oxy",
                             custom_data=['names', 'websites'])
     # fig = px.scatter_mapbox(poi_df, lat=data_dict["lats"], lon=data_dict["longs"],
