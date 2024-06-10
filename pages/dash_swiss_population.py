@@ -1,8 +1,8 @@
 import json
 import plotly.graph_objects as go
 import dash
-from dash import callback, Output, Input, dcc, html
-
+from dash import callback, dcc, Input, Output, State, html
+import dash_bootstrap_components as dbc
 import geopandas as gpd
 
 dash.register_page(
@@ -25,8 +25,6 @@ shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5
 ddown_options = list(shape_files_dict.keys())
 DATA_OPTIONS = ["Population", "Area", "Density"]
 
-import dash_bootstrap_components as dbc
-from dash import Input, Output, State, html
 
 modal = html.Div(
     [
@@ -34,7 +32,7 @@ modal = html.Div(
         dbc.Modal(
             [
                 dbc.ModalHeader(dbc.ModalTitle("Long processing time"), style={'color': 'black'}),
-                dbc.ModalBody("Hold on, Gemeinde dataset takes more time to process...", style={'color': 'black'}),
+                dbc.ModalBody("Hold on, larger dataset takes more time to process and render...", style={'color': 'black'}),
                 dbc.ModalFooter(
                     dbc.Button(
                         "Ok", id="close", className="ms-auto", n_clicks=0
@@ -64,7 +62,7 @@ def toggle_modal(n1, n2, n3, is_open):
 
 layout = [
     modal,
-    dcc.Interval(id='interval-component', interval=1*1000, n_intervals=0),  # 1*1000 = 1 second
+    dcc.Interval(id='interval-component', interval=1*3000, n_intervals=0),  # 1*1000 = 1 second
     html.H3(children='Swiss Population'),
     html.Div([
         dcc.Dropdown(ddown_options, 'Kantone', className='ddown', id='dropdown-shape'),
@@ -135,5 +133,5 @@ def update_graph(api_id="Population", shape_type="Kantone"):
                       font=dict(color='lightgray'),
                       )
 
-    return fig, 1
+    return fig, 0
 
