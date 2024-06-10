@@ -3,6 +3,7 @@ uvicorn
 fastapi
 requests
 dash
+dash_bootstrap_components
 pandas
 plotly
 overpy

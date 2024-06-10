@@ -69,18 +69,20 @@ layout = html.Div([
 )
 def update_graph(selected_layers=None, shape_type=None):
 
-    # Create a pandas DataFrame from the dictionary
     if '5G' in selected_layers:
         df = pd.DataFrame(ant_gdf)
     else:
         df = pd.DataFrame(ant_gdf)[0:0]
 
-    fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=df.power_int,
+    fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=df.power_int*2,
                             mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=7,
+                            custom_data=[df["powercode_de"]],
                             )
-    #fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
-    fig.update_layout(title_text=f"{count} antennas", title_font={'size': 12, 'color': 'lightgray'})
-    fig.update_layout(coloraxis_showscale=False,
+    # Create a pandas DataFrame from the dictionary
+    fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Power: %{customdata[0]}<extra></extra>")
+    fig.update_layout(title_text=f"{count} antennas",
+                      title_font={'size': 12, 'color': 'lightgray'},
+                      coloraxis_showscale=False,
                       autosize=True,
                       margin=dict(
                           l=20,  # left margin
@@ -90,6 +92,7 @@ def update_graph(selected_layers=None, shape_type=None):
                           pad=10  # padding
                           ),
                       paper_bgcolor='rgba(0,0,0,0)',
+                      font=dict(color='lightgray'),
                       )
 
     # Draw map with shape data

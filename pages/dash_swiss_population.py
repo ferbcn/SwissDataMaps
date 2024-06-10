@@ -1,9 +1,9 @@
 import json
 import plotly.graph_objects as go
 import dash
-from dash import callback, Output, Input, dcc, html
-
+from dash import callback, dcc, Input, Output, html
 import geopandas as gpd
+from dash_modal_long_wait import modal, toggle_modal
 
 dash.register_page(
     __name__,
@@ -19,17 +19,19 @@ TEMP_DIR = 'temp'
 
 # Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
 shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5000, 10000]],
-                    "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA", [100000, 500, 10000]],
+                    "Bezirke": ["static/gdf_bez.json", "BEZIRKSFLA", [100000, 500, 10000]],
                     "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA", [100000, 200, 10000]]}
 
 ddown_options = list(shape_files_dict.keys())
 DATA_OPTIONS = ["Population", "Area", "Density"]
 
+
 layout = [
+    modal,
     html.H3(children='Swiss Population'),
     html.Div([
         dcc.Dropdown(ddown_options, 'Kantone', className='ddown', id='dropdown-shape'),
-        dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-5g'),
+        dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-pop'),
     ], className="ddmenu"),
     dcc.Loading(
         id="loading",
@@ -49,7 +51,7 @@ layout = [
 
 @callback(
     Output('graph-content-2', 'figure'),
-    Input('dropdown-5g', 'value'),
+    Input('dropdown-pop', 'value'),
     Input('dropdown-shape', 'value'),
 )
 def update_graph(api_id="Population", shape_type="Kantone"):

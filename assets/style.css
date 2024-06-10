@@ -12,8 +12,33 @@
 }
 
 body{
+        color: var(--text_color);
+    position: absolute;
+    top: 60px;
+    left: 0;
+    text-align: center;
+    font-family: arial, serif;
+    font-size: 16px;
     background-color: var(--bg_dark);
-    color: var(--text_color);
+    width: 100%;
+}
+
+.container-outer{
+    background-color: var(--bg_dark);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+
+.container-main{
+    margin-top: 10px;
+    width: 100%;
+    max-width: 1200px;
 }
 
 Pre{
@@ -31,62 +56,8 @@ a:hover{
     color: var(--secondary);
 }
 
-.navbar{
-    background-color: var(--bg_dark);
-}
-
-.pagefooter {
-    background-color: var(--bg_dark);
-}
-
-.container-outer{
-    background-color: var(--bg_dark);
-}
-
-
-.nav-button:hover{
-    background-color: var(--text_color);
-    color: var(--text_color);
-}
-
-.ddown {
-   color: var(--bg_dark);
-
-}
-
-.ddown option {
-    background-color: #555;
-}
-
 .source-data {
     color: var(--primary);
-}
-
-body{
-    position: absolute;
-    top: 60px;
-    left: 0;
-    text-align: center;
-    font-family: arial, serif;
-    font-size: 16px;
-    background-color: var(--bg_dark);
-    width: 100%;
-}
-.container-outer{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-    text-align: center;
-}
-
-.container-main{
-    margin-top: 10px;
-    width: 100%;
-    max-width: 1200px;
 }
 
 p{
@@ -106,9 +77,8 @@ p{
 
 .logo{
     float: left;
-    width: 20vw;
-    height: 20vw;
-    max-width: 200px;
+    width: 15vw;
+    height: 15vw;
     max-width: 200px;
     max-height: 200px;
     margin-right: 20px;
@@ -139,7 +109,7 @@ p{
 }
 
 .link-item:hover{
-    background-color: var(--primary);
+    background-color: var(--text_color);
     color: var(--bg_dark);
     transition: background-color 0.3s ease-in-out;
 }
@@ -182,12 +152,25 @@ p{
 }
 
 .navbar{
+    background-color: var(--bg_dark);
     position:fixed;
     top:0;
     width: 100%;
     z-index: 99999999;
-    background-color: var(--bg_dark);
+    opacity: 0.95;
     /*box-shadow: 0 2px 4px rgb(152, 188, 206, 0.5);*/
+}
+
+
+.nav-button{
+    color: var(--text_color);
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.nav-button:hover{
+    background-color: rgb(255,255,255,1);
+    color: var(--bg_dark);
 }
 
 .navbar-collapsed{
@@ -195,6 +178,7 @@ p{
 }
 
 .pagefooter {
+    background-color: var(--bg_dark);
     font-size: 12px;
     position: fixed;
     left: 0;
@@ -215,6 +199,7 @@ p{
 
 /* Maps and Visualizations */
 .ddown {
+    color: var(--bg_dark);
     padding: 10px;
     max-width: 50vw;
     min-width: 180px;
@@ -280,3 +265,19 @@ p{
     }
 }
 
+.modal-autohide {
+    animation: fadeOut 2s forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}

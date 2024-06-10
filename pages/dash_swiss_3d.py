@@ -5,6 +5,8 @@ import geopandas as gpd
 import numpy as np
 from scipy.interpolate import griddata
 
+from dash_modal_long_wait import modal, toggle_modal
+
 dash.register_page(
     __name__,
     name='Topographic Map',
@@ -23,6 +25,7 @@ ddown_options = list(shape_files_dict.keys())
 ddown_methods = ["linear", "cubic", "nearest"]
 
 layout = [
+    modal,
     html.H3(children='Swiss Topographic Map'),
     html.Div([
         dcc.Dropdown(ddown_options, 'Kantone', className='ddown', id='dropdown-shape'),
