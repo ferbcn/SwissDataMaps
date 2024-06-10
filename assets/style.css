@@ -109,7 +109,7 @@ p{
 }
 
 .link-item:hover{
-    background-color: var(--primary);
+    background-color: var(--text_color);
     color: var(--bg_dark);
     transition: background-color 0.3s ease-in-out;
 }

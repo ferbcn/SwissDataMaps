@@ -76,10 +76,12 @@ def update_graph(selected_layers=None, shape_type=None):
     fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=5,
                             mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=7,
                             custom_data=[df["name"], df["plugs"]],
+                            color_continuous_scale="spectral",
                             )
     fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}<extra></extra>")
-    fig.update_layout(title_text=f"{count} EV Stations", title_font={'size': 12, 'color': 'lightgray'})
-    fig.update_layout(coloraxis_showscale=False,
+    fig.update_layout(title_text=f"{count} EV Stations",
+                      title_font={'size': 12, 'color': 'lightgray'},
+                      coloraxis_showscale=False,
                       autosize=True,
                       margin=dict(
                           l=20,  # left margin

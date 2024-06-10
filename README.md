@@ -25,5 +25,8 @@ Running the App in Docker
 docker-compose up --build
 ```
 
+### Trying the App
+Link: [https://swissmaps.xyz](https://swissmaps.xyz)
+
 ![App screenshot](assets/screen.png)
 
