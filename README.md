@@ -22,11 +22,11 @@ pip install -r requirements.txt
 Running the App in Docker
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 ### Trying the App
-Link: [https://swissmaps.xyz](https://swissmaps.xyz)
+[https://swissmaps.xyz](https://swissmaps.xyz)
 
 ![App screenshot](assets/screen.png)
 
