@@ -6,9 +6,11 @@ import plotly.graph_objects as go
 import dash
 from dash import html, dcc, callback, Output, Input
 from geopandas import sjoin
+import geopandas as gpd
 
 from data_loader_overpy import get_data_overpy, get_tag_keys_values_options
-import geopandas as gpd
+from dash_modal_long_wait import modal, toggle_modal
+
 
 dash.register_page(
     __name__,
@@ -31,6 +33,7 @@ shape_files_dict = {"-": "",
 ddown_options = list(shape_files_dict.keys())
 
 layout = html.Div([
+    modal,
     html.H3(children='Open Street Maps and Swiss Population Densities'),
     html.Div([
         html.Div([

@@ -1,9 +1,9 @@
 import json
 import plotly.graph_objects as go
 import dash
-from dash import callback, dcc, Input, Output, State, html
-import dash_bootstrap_components as dbc
+from dash import callback, dcc, Input, Output, html
 import geopandas as gpd
+from dash_modal_long_wait import modal, toggle_modal
 
 dash.register_page(
     __name__,
@@ -19,54 +19,19 @@ TEMP_DIR = 'temp'
 
 # Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
 shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5000, 10000]],
-                    "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA", [100000, 500, 10000]],
+                    "Bezirke": ["static/gdf_bez.json", "BEZIRKSFLA", [100000, 500, 10000]],
                     "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA", [100000, 200, 10000]]}
 
 ddown_options = list(shape_files_dict.keys())
 DATA_OPTIONS = ["Population", "Area", "Density"]
 
 
-modal = html.Div(
-    [
-        dbc.Button("Open modal", id="open", n_clicks=0, style={'display': 'none'}),
-        dbc.Modal(
-            [
-                dbc.ModalHeader(dbc.ModalTitle("Long processing time"), style={'color': 'black'}),
-                dbc.ModalBody("Hold on, larger dataset takes more time to process and render...", style={'color': 'black'}),
-                dbc.ModalFooter(
-                    dbc.Button(
-                        "Ok", id="close", className="ms-auto", n_clicks=0
-                    )
-                ),
-            ],
-            id="modal",
-            centered=True,
-            is_open=False,
-        ),
-    ]
-)
-
-
-@callback(
-    Output("modal", "is_open"),
-    [Input("open", "n_clicks"),
-     Input("close", "n_clicks"),
-     Input("interval-component", "n_intervals")],
-    [State("modal", "is_open")],
-)
-def toggle_modal(n1, n2, n3, is_open):
-    if n1 or n2 or n3:
-        return not is_open
-    return is_open
-
-
 layout = [
     modal,
-    dcc.Interval(id='interval-component', interval=1*3000, n_intervals=0),  # 1*1000 = 1 second
     html.H3(children='Swiss Population'),
     html.Div([
         dcc.Dropdown(ddown_options, 'Kantone', className='ddown', id='dropdown-shape'),
-        dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-5g'),
+        dcc.Dropdown(DATA_OPTIONS, "Population", className='ddown', id='dropdown-pop'),
     ], className="ddmenu"),
     dcc.Loading(
         id="loading",
@@ -86,8 +51,7 @@ layout = [
 
 @callback(
     Output('graph-content-2', 'figure'),
-    Output('interval-component', 'max_intervals'),  # Add this line
-    Input('dropdown-5g', 'value'),
+    Input('dropdown-pop', 'value'),
     Input('dropdown-shape', 'value'),
 )
 def update_graph(api_id="Population", shape_type="Kantone"):
@@ -133,5 +97,5 @@ def update_graph(api_id="Population", shape_type="Kantone"):
                       font=dict(color='lightgray'),
                       )
 
-    return fig, 0
+    return fig
 

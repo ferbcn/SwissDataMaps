@@ -69,19 +69,20 @@ layout = html.Div([
 )
 def update_graph(selected_layers=None, shape_type=None):
 
-    # Create a pandas DataFrame from the dictionary
     if '5G' in selected_layers:
         df = pd.DataFrame(ant_gdf)
     else:
-        df = pd.DataFrame()
+        df = pd.DataFrame(ant_gdf)[0:0]
 
-    fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=df.power_int*5,
-                            mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=10,
+    fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=df.power_int*2,
+                            mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=7,
                             custom_data=[df["powercode_de"]],
                             )
+    # Create a pandas DataFrame from the dictionary
     fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Power: %{customdata[0]}<extra></extra>")
-    fig.update_layout(title_text=f"{count} antennas", title_font={'size': 12, 'color': 'lightgray'})
-    fig.update_layout(coloraxis_showscale=False,
+    fig.update_layout(title_text=f"{count} antennas",
+                      title_font={'size': 12, 'color': 'lightgray'},
+                      coloraxis_showscale=False,
                       autosize=True,
                       margin=dict(
                           l=20,  # left margin
