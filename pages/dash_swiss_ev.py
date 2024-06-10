@@ -16,7 +16,7 @@ dash.register_page(
     image_url='assets/ev.png'
 )
 # Load Antenna data from JSON file
-print("Loading Antenna data...")
+print("Loading EV Stations data...")
 ev_gdf = gpd.read_file("static/ev_gdf.json")
 count = len(ev_gdf)
 
@@ -75,8 +75,9 @@ def update_graph(selected_layers=None, shape_type=None):
 
     fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=5,
                             mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=7,
+                            custom_data=[df["name"], df["plugs"]],
                             )
-    #fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
+    fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}<extra></extra>")
     fig.update_layout(title_text=f"{count} EV Stations", title_font={'size': 12, 'color': 'lightgray'})
     fig.update_layout(coloraxis_showscale=False,
                       autosize=True,
@@ -90,7 +91,6 @@ def update_graph(selected_layers=None, shape_type=None):
                       paper_bgcolor='rgba(0,0,0,0)',
                       font=dict(color='lightgray'),
                       )
-
     # Draw map with shape data
     if shape_type in ddown_options[1:]:
         filepath = shape_files_dict.get(shape_type)

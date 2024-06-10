@@ -8,7 +8,7 @@ import plotly.express as px
 import dash
 from dash import html, dcc, callback, Output, Input
 
-from osm_overpy import get_data_overpy, get_tag_keys_values_options, get_country_codes
+from data_loader_overpy import get_data_overpy, get_tag_keys_values_options, get_country_codes
 
 dash.register_page(
     __name__,

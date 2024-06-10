@@ -45,7 +45,6 @@ def get_data_overpy(country_iso_a2, tag_key, tag_value):
                 ( node[{1}={2}]( area.searchArea );
                 );
                 out center;""".format(country_iso_a2, tag_key, tag_value))
-
         #print(f"Received {len(r.nodes)} nodes for {tag_value}")
         for node in r.nodes:
             try:  # not all entries have a name
@@ -64,7 +63,8 @@ def get_data_overpy(country_iso_a2, tag_key, tag_value):
             websites=websites
         )
 
-        with open(file_path, 'w') as f:
-            json.dump(data_dict, f)
+        if len(data_dict['longs']) > 0:
+            with open(file_path, 'w') as f:
+                json.dump(data_dict, f)
 
     return data_dict

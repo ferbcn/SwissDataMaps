@@ -73,12 +73,13 @@ def update_graph(selected_layers=None, shape_type=None):
     if '5G' in selected_layers:
         df = pd.DataFrame(ant_gdf)
     else:
-        df = pd.DataFrame(ant_gdf)[0:0]
+        df = pd.DataFrame()
 
     fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=df.power_int*5,
-                            mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=10 ,
+                            mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=10,
+                            custom_data=[df["powercode_de"]],
                             )
-    #fig.update_traces(hovertemplate="Name: %{customdata[0]} <br><a href='%{customdata[1]}'>%{customdata[1]}</a> <br>Coordinates: %{lat}, %{lon}")
+    fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Power: %{customdata[0]}<extra></extra>")
     fig.update_layout(title_text=f"{count} antennas", title_font={'size': 12, 'color': 'lightgray'})
     fig.update_layout(coloraxis_showscale=False,
                       autosize=True,

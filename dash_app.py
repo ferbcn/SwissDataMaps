@@ -2,7 +2,7 @@ import os
 import dash
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
-from link_maker import build_page_registry, build_nav_links
+from dash_layout_builder import build_page_registry, build_nav_links
 
 external_stylesheets = [
     'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',

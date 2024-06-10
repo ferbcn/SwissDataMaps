@@ -1,9 +1,12 @@
 import os
-from string_decode import decode_string
-import geopandas as gpd
-import json
-import requests
 import time
+import json
+import geopandas as gpd
+import requests
+from geopandas import GeoSeries
+from shapely.geometry import Point
+
+from string_decode import decode_string
 
 TEMP_DIR = "temp"
 
@@ -18,7 +21,8 @@ class ZueriData:
         print('Retrieving Zürich Tourism API endpoints...')
         try:
             api_endpoints_raw = requests.get(self.end_url)
-            api_ids_names = {item.get('id'): item.get('name').get('de') for item in api_endpoints_raw.json() if not item.get('name').get('de') is None}
+            api_ids_names = {item.get('id'): item.get('name').get('de') for item in api_endpoints_raw.json() if
+                             not item.get('name').get('de') is None}
         except Exception as e:
             print(f'Error: {e}')
             api_ids_names = {101: 'Error Retrieving data...'}
@@ -27,7 +31,8 @@ class ZueriData:
     def get_api_data(self, api_id=101):
         print(f'Checking for cached version of API endpoint with id {api_id}')
         # Check if the data is already cached and not older than 24h
-        if os.path.exists(f'{self.temp_dir}/{api_id}.json') and os.path.getctime(f'{self.temp_dir}/{api_id}.json') > time.time() - (60 * 60 * 24):
+        if os.path.exists(f'{self.temp_dir}/{api_id}.json') and os.path.getctime(
+                f'{self.temp_dir}/{api_id}.json') > time.time() - (60 * 60 * 24):
             print('Loading cached data...')
             with open(f'{self.temp_dir}/{api_id}.json', 'r') as f:
                 data = json.load(f)
@@ -92,31 +97,41 @@ def load_transform_save_political_shape_geo_data():
 
 def load_transform_ev_station_data():
     # Load Antenna data from JSON file
-    print("Loading EV data...")
-    filename = "static/ev_stations.json"
-    # ev_gdf = gpd.read_file(filename)
-    # count = len(ev_gdf)
-    with open(filename, 'r') as f:
-        data = json.load(f)
+    print("Loading EV data from URL...")
+    # Ladestationen verfügbarkeit
+    # url = "https://data.geo.admin.ch/ch.bfe.ladestellen-elektromobilitaet/status/oicp/ch.bfe.ladestellen-elektromobilitaet.json"
+    # Ladestationen Infos
+    url = "https://data.geo.admin.ch/ch.bfe.ladestellen-elektromobilitaet/data/oicp/ch.bfe.ladestellen-elektromobilitaet.json"
+    response = requests.get(url)
+    data = response.json()
+    # print("Loading EV data from file...")
+    # filename = "static/ev_stations.json"
+    # with open(filename, 'r') as f:
+    #     data = json.load(f)
+
     stations = data.get("EVSEData")[0].get("EVSEDataRecord")
 
     coordinates = []
-    plug_count = []
+    plugs = []
+    names = []
     for station in stations:
+        current_plugs = [station for station in station.get("Plugs")]
         coordinates.append(station.get("GeoCoordinates").get("Google"))
-        plug_count.append(station.get("Plugs"))
+        # plugs.append({str(i):str(station) for i, station in enumerate(station.get("Plugs"))})
+        plugs_str = ", ".join([str(plug) for plug in current_plugs])
+        plugs.append(plugs_str)
+        names.append(station.get("ChargingStationNames")[0].get("value"))
 
-    print("Count: ", len(coordinates))
-    print("Plug count: ", len(plug_count))
+    print("Data Size: ", len(coordinates))
     print("Sample coordinates: ", coordinates[:5])
-    print("Sample plug count: ", plug_count[:5])
+    print("Sample plug count: ", plugs[:5])
+    print("Sample names: ", names[:5])
 
-    from shapely.geometry import Point
-
-    ev_gdf = gpd.GeoDataFrame()
+    ev_gdf = gpd.GeoDataFrame(geometry=GeoSeries())
+    ev_gdf['name'] = names
     ev_gdf['lat'] = [float(coord.split(" ")[0]) for coord in coordinates]
     ev_gdf['lon'] = [float(coord.split(" ")[1]) for coord in coordinates]
-    # ev_gdf['plugs'] = plug_count
+    ev_gdf['plugs'] = plugs
     ev_gdf['geometry'] = [Point(xy) for xy in zip(ev_gdf['lon'], ev_gdf['lat'])]
     ev_gdf.set_geometry('geometry')
 

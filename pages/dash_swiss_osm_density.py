@@ -7,7 +7,7 @@ import dash
 from dash import html, dcc, callback, Output, Input
 from geopandas import sjoin
 
-from osm_overpy import get_data_overpy, get_tag_keys_values_options
+from data_loader_overpy import get_data_overpy, get_tag_keys_values_options
 import geopandas as gpd
 
 dash.register_page(
