@@ -15,7 +15,8 @@ dash.register_page(
     title='EV Charging Stations Network Status',
     description='EV charging stations in Switzerland with real time availability and status data.',
     path='/ev',
-    image_url='assets/ev.png'
+    image_url='assets/ev.png',
+    order=1
 )
 # Load Station data from JSON file
 print("Loading EV Stations data...")
@@ -26,7 +27,9 @@ DDOWN_OPTIONS = ["All", "Available", "Occupied", "OutOfService", "Unknown"]
 layout = html.Div([
     html.H3(children='Swiss EV Charger Network - Real Time Data'),
     html.Div([
-        dcc.Dropdown(DDOWN_OPTIONS, 'All', className='ddown', id='ddown-type'),
+        html.Div([
+            "Select: ", dcc.Dropdown(DDOWN_OPTIONS, 'All', className='ddown', id='ddown-type'),
+        ], className='ddmenu'),
     ], className="ddmenu"),
 
     dcc.Loading(
