@@ -1,4 +1,6 @@
 import json
+import time
+
 import pandas as pd
 import plotly.express as px
 import dash
@@ -6,6 +8,7 @@ from dash import html, dcc, callback, Output, Input
 import geopandas as gpd
 import plotly.graph_objects as go
 
+from data_loader import get_live_ev_station_data
 
 dash.register_page(
     __name__,
@@ -15,33 +18,19 @@ dash.register_page(
     path='/ev',
     image_url='assets/ev.png'
 )
-# Load Antenna data from JSON file
+# Load Station data from JSON file
 print("Loading EV Stations data...")
 ev_gdf = gpd.read_file("static/ev_gdf.json")
-count = len(ev_gdf)
-
-ddown_options = ["-", "Kantone", "Bezirke", "Gemeinden"]
-
-# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
-shape_files_dict = {"Kantone": "static/gdf_kan.json",
-                    "Bezirke": "static/gdf_bez.json",
-                    "Gemeinden": "static/gdf_gem.json"}
-
-# TODO: maybe load all GDFs into memory in one go on startup
 
 layout = html.Div([
     html.H3(children='EV Charger Network'),
     html.Div([
         dcc.Checklist(
             id='layer-toggle',
-            options=[{'label': 'EV Chargers', 'value': '5G'}],
-            value=['5G'],
+            options=[{'label': 'Only Show Available', 'value': 'available'}],
+            value=[''],
             className='layer-toggle',
         ),
-        html.Div([
-            "Pop. density:",
-            dcc.Dropdown(ddown_options, '-', className='ddown', id='dropdown-shape')
-        ], className='ddmenu'),
     ], className="ddmenu"),
 
     dcc.Loading(
@@ -63,25 +52,36 @@ layout = html.Div([
 @callback(
     Output('graph-content-ev', 'figure'),
     Input('layer-toggle', 'value'),
-    Input('dropdown-shape', 'value'),
 )
-def update_graph(selected_layers=None, shape_type=None):
+def update_graph(selected_layers=None):
 
+    colors = {"Available": "green", "Occupied": "orange", "OutOfService": "red", "Unknown": "gray"}
     # Create a pandas DataFrame from the dictionary
-    if '5G' in selected_layers:
-        df = pd.DataFrame(ev_gdf)
-    else:
-        df = pd.DataFrame(ev_gdf)[0:0]
+    df = pd.DataFrame(ev_gdf)
+    live_df = get_live_ev_station_data()
+    # Inner Join the live data with the existing data (key = EvseID)
+    print("Merging live data with existing data...")
+    df = pd.merge(df, live_df, on='EvseID', how='inner')
+    df['EVSEStatusColor'] = df['EVSEStatus'].map(colors)
 
-    fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=5,
-                            mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=7,
-                            custom_data=[df["name"], df["plugs"]],
-                            color_continuous_scale="spectral",
-                            )
-    fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}<extra></extra>")
-    fig.update_layout(title_text=f"{count} EV Stations",
+    # remove rows where EVSEStatus is not "Available"
+    if 'available' in selected_layers:
+        df = df[df['EVSEStatus'] == "Available"]
+
+    count = len(df)
+
+    fig = go.Figure(go.Scattermapbox(lat=df['lat'], lon=df['lon'], mode='markers',
+                                     marker=dict(size=10, color=df['EVSEStatusColor'], opacity=0.7),
+                                     customdata=list(
+                                         zip(df["name"].tolist(), df["plugs"].tolist(), df['EVSEStatus'].tolist())),
+                                     ))
+
+    fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}"
+                                    "<br>Status: %{customdata[2]}<extra></extra>")
+
+    fig.update_layout(mapbox_style="open-street-map",
+                      title_text=f"{count} EV Stations",
                       title_font={'size': 12, 'color': 'lightgray'},
-                      coloraxis_showscale=False,
                       autosize=True,
                       margin=dict(
                           l=20,  # left margin
@@ -92,32 +92,8 @@ def update_graph(selected_layers=None, shape_type=None):
                           ),
                       paper_bgcolor='rgba(0,0,0,0)',
                       font=dict(color='lightgray'),
+                      mapbox=dict(center=dict(lat=46.8, lon=8.2), zoom=7),
                       )
-    # Draw map with shape data
-    if shape_type in ddown_options[1:]:
-        filepath = shape_files_dict.get(shape_type)
-        print("Loading Shape data...")
-        gdf = gpd.read_file(filepath)
-        print("Converting to GeoJSON...")
-        geojson_data = json.loads(gdf.to_json())
-        z_max = 10000
-
-        fig.add_trace(
-            go.Choroplethmapbox(
-                geojson=geojson_data,
-                locations=gdf.index,  # or replace with the column containing the feature identifiers
-                z=gdf['DICHTE'],  # or replace with the column containing the values to color-code
-                colorscale="blues",
-                zmin=0,
-                zmax=z_max,
-                marker_opacity=0.5,
-                marker_line_width=0,
-                customdata=gdf['NAME'].values.reshape(-1, 1),
-                hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>',
-                visible= True if shape_type in ddown_options[1:] else False,
-                showlegend = False  # Add this line,
-            )
-        )
 
     return fig
 
