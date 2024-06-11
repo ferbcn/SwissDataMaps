@@ -101,11 +101,8 @@ def load_transform_ev_station_data():
     url = "https://data.geo.admin.ch/ch.bfe.ladestellen-elektromobilitaet/data/oicp/ch.bfe.ladestellen-elektromobilitaet.json"
     response = requests.get(url)
     data = response.json()
-    # print("Loading EV data from file...")
-    # filename = "static/ev_stations.json"
-    # with open(filename, 'r') as f:
-    #     data = json.load(f)
     stations = data.get("EVSEData")[0].get("EVSEDataRecord")
+
     station_ids = []
     coordinates = []
     plugs = []
@@ -135,6 +132,7 @@ def load_transform_ev_station_data():
 
     # save to json file
     ev_gdf.to_file("static/ev_gdf.json", driver='GeoJSON')
+    return ev_gdf
 
 
 def get_live_ev_station_data():
@@ -152,5 +150,6 @@ if __name__ == "__main__":
     # load_transform_save_antenna_data()
     # load_transform_save_political_shape_geo_data()
     # load_transform_ev_station_data()
-    print(get_live_ev_station_data().head())
+    # print(get_live_ev_station_data().head())
+    print(get_static_ev_station_data().head())
     print("Done.")

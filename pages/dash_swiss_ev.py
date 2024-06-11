@@ -1,14 +1,13 @@
-import json
+import os.path
 import time
 
 import pandas as pd
-import plotly.express as px
 import dash
 from dash import html, dcc, callback, Output, Input
 import geopandas as gpd
 import plotly.graph_objects as go
 
-from data_loader import get_live_ev_station_data
+from data_loader import get_live_ev_station_data, load_transform_ev_station_data
 
 dash.register_page(
     __name__,
@@ -53,8 +52,16 @@ layout = html.Div([
 def update_graph(selected_layer=None):
 
     colors = {"Available": "green", "Occupied": "orange", "OutOfService": "red", "Unknown": "gray"}
-    # Create a pandas DataFrame from the dictionary
-    df = pd.DataFrame(ev_gdf)
+    # if cached file is older than 24h or does not exist, load fresh data
+    if os.path.exists("static/ev_gdf.json") and time.time() > os.path.getctime("static/ev_gdf.json") + 60*60*24:
+        print("Loading fresh EV static data...")
+        df = load_transform_ev_station_data()
+    else:
+        print("Using cached EV static data from file...")
+        # load pandas df from dictionary
+        df = pd.DataFrame(ev_gdf)
+
+    print("Loading live EV station data...")
     live_df = get_live_ev_station_data()
     # Inner Join the live data with the existing data (key = EvseID)
     print("Merging live data with existing data...")
