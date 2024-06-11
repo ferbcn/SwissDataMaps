@@ -1,46 +1,34 @@
-import json
+import os.path
+import time
+
 import pandas as pd
-import plotly.express as px
 import dash
 from dash import html, dcc, callback, Output, Input
 import geopandas as gpd
 import plotly.graph_objects as go
 
+from data_loader import get_live_ev_station_data, load_transform_ev_station_data
 
 dash.register_page(
     __name__,
-    name='EV Charger Network',
-    title='EV Charging Stations Network',
-    description='EV Chargers Coverage in Switzerland.',
+    name='EV Chargers Swiss',
+    title='EV Charging Stations Network Status',
+    description='EV charging stations in Switzerland with real time availability and status data.',
     path='/ev',
-    image_url='assets/ev.png'
+    image_url='assets/ev.png',
+    order=1
 )
-# Load Antenna data from JSON file
+# Load Station data from JSON file
 print("Loading EV Stations data...")
 ev_gdf = gpd.read_file("static/ev_gdf.json")
-count = len(ev_gdf)
 
-ddown_options = ["-", "Kantone", "Bezirke", "Gemeinden"]
-
-# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
-shape_files_dict = {"Kantone": "static/gdf_kan.json",
-                    "Bezirke": "static/gdf_bez.json",
-                    "Gemeinden": "static/gdf_gem.json"}
-
-# TODO: maybe load all GDFs into memory in one go on startup
+DDOWN_OPTIONS = ["All", "Available", "Occupied", "OutOfService", "Unknown"]
 
 layout = html.Div([
-    html.H3(children='EV Charger Network'),
+    html.H3(children='Swiss EV Charger Network - Real Time Data'),
     html.Div([
-        dcc.Checklist(
-            id='layer-toggle',
-            options=[{'label': 'EV Chargers', 'value': '5G'}],
-            value=['5G'],
-            className='layer-toggle',
-        ),
         html.Div([
-            "Pop. density:",
-            dcc.Dropdown(ddown_options, '-', className='ddown', id='dropdown-shape')
+            "Select: ", dcc.Dropdown(DDOWN_OPTIONS, 'All', className='ddown', id='ddown-type'),
         ], className='ddmenu'),
     ], className="ddmenu"),
 
@@ -62,26 +50,50 @@ layout = html.Div([
 
 @callback(
     Output('graph-content-ev', 'figure'),
-    Input('layer-toggle', 'value'),
-    Input('dropdown-shape', 'value'),
+    Input('ddown-type', 'value'),
 )
-def update_graph(selected_layers=None, shape_type=None):
+def update_graph(selected_layer=None):
 
-    # Create a pandas DataFrame from the dictionary
-    if '5G' in selected_layers:
-        df = pd.DataFrame(ev_gdf)
+    colors = {"Available": "green", "Occupied": "orange", "OutOfService": "red", "Unknown": "gray"}
+    # if cached file is older than 24h or does not exist, load fresh data
+    if os.path.exists("static/ev_gdf.json") and time.time() > os.path.getctime("static/ev_gdf.json") + 60*60*24:
+        print("Loading fresh EV static data...")
+        df = load_transform_ev_station_data()
     else:
-        df = pd.DataFrame(ev_gdf)[0:0]
+        print("Using cached EV static data from file...")
+        # load pandas df from dictionary
+        df = pd.DataFrame(ev_gdf)
 
-    fig = px.density_mapbox(df, lat=df.lat, lon=df.lon, radius=5,
-                            mapbox_style="open-street-map", center=dict(lat=46.8, lon=8.2), zoom=7,
-                            custom_data=[df["name"], df["plugs"]],
-                            color_continuous_scale="spectral",
-                            )
-    fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}<extra></extra>")
-    fig.update_layout(title_text=f"{count} EV Stations",
+    print("Loading live EV station data...")
+    live_df = get_live_ev_station_data()
+    # Inner Join the live data with the existing data (key = EvseID)
+    print("Merging live data with existing data...")
+    df = pd.merge(df, live_df, on='EvseID', how='inner')
+    df['EVSEStatusColor'] = df['EVSEStatus'].map(colors)
+
+    # remove rows where EVSEStatus is not "Available"
+    if selected_layer in DDOWN_OPTIONS and selected_layer != "All":
+        df = df[df['EVSEStatus'] == selected_layer]
+
+    count = len(df)
+    graph_title = f"{count} EV chargers ({selected_layer.lower()})"
+
+    fig = go.Figure(go.Scattermapbox(lat=df['lat'], lon=df['lon'], mode='markers',
+                                        marker=dict(
+                                            size=10,
+                                            color=df['EVSEStatusColor'],
+                                            opacity=0.7,
+                                    ),
+                                    customdata=list(
+                                         zip(df["name"].tolist(), df["plugs"].tolist(), df['EVSEStatus'].tolist())),
+                                    ))
+
+    fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}"
+                                    "<br>Status: %{customdata[2]}<extra></extra>")
+
+    fig.update_layout(mapbox_style="open-street-map",
+                      title_text=graph_title,
                       title_font={'size': 12, 'color': 'lightgray'},
-                      coloraxis_showscale=False,
                       autosize=True,
                       margin=dict(
                           l=20,  # left margin
@@ -92,32 +104,8 @@ def update_graph(selected_layers=None, shape_type=None):
                           ),
                       paper_bgcolor='rgba(0,0,0,0)',
                       font=dict(color='lightgray'),
+                      mapbox=dict(center=dict(lat=46.8, lon=8.2), zoom=7)
                       )
-    # Draw map with shape data
-    if shape_type in ddown_options[1:]:
-        filepath = shape_files_dict.get(shape_type)
-        print("Loading Shape data...")
-        gdf = gpd.read_file(filepath)
-        print("Converting to GeoJSON...")
-        geojson_data = json.loads(gdf.to_json())
-        z_max = 10000
-
-        fig.add_trace(
-            go.Choroplethmapbox(
-                geojson=geojson_data,
-                locations=gdf.index,  # or replace with the column containing the feature identifiers
-                z=gdf['DICHTE'],  # or replace with the column containing the values to color-code
-                colorscale="blues",
-                zmin=0,
-                zmax=z_max,
-                marker_opacity=0.5,
-                marker_line_width=0,
-                customdata=gdf['NAME'].values.reshape(-1, 1),
-                hovertemplate='<b>%{customdata[0]}</b><br>%{z}<extra></extra>',
-                visible= True if shape_type in ddown_options[1:] else False,
-                showlegend = False  # Add this line,
-            )
-        )
 
     return fig
 

@@ -5,6 +5,7 @@ import geopandas as gpd
 import requests
 from geopandas import GeoSeries
 from shapely.geometry import Point
+import pandas as pd
 
 from string_decode import decode_string
 
@@ -96,25 +97,18 @@ def load_transform_save_political_shape_geo_data():
 
 
 def load_transform_ev_station_data():
-    # Load Antenna data from JSON file
     print("Loading EV data from URL...")
-    # Ladestationen verfügbarkeit
-    # url = "https://data.geo.admin.ch/ch.bfe.ladestellen-elektromobilitaet/status/oicp/ch.bfe.ladestellen-elektromobilitaet.json"
-    # Ladestationen Infos
     url = "https://data.geo.admin.ch/ch.bfe.ladestellen-elektromobilitaet/data/oicp/ch.bfe.ladestellen-elektromobilitaet.json"
     response = requests.get(url)
     data = response.json()
-    # print("Loading EV data from file...")
-    # filename = "static/ev_stations.json"
-    # with open(filename, 'r') as f:
-    #     data = json.load(f)
-
     stations = data.get("EVSEData")[0].get("EVSEDataRecord")
 
+    station_ids = []
     coordinates = []
     plugs = []
     names = []
     for station in stations:
+        station_ids.append(station.get("EvseID"))
         current_plugs = [station for station in station.get("Plugs")]
         coordinates.append(station.get("GeoCoordinates").get("Google"))
         # plugs.append({str(i):str(station) for i, station in enumerate(station.get("Plugs"))})
@@ -128,6 +122,7 @@ def load_transform_ev_station_data():
     print("Sample names: ", names[:5])
 
     ev_gdf = gpd.GeoDataFrame(geometry=GeoSeries())
+    ev_gdf['EvseID'] = station_ids
     ev_gdf['name'] = names
     ev_gdf['lat'] = [float(coord.split(" ")[0]) for coord in coordinates]
     ev_gdf['lon'] = [float(coord.split(" ")[1]) for coord in coordinates]
@@ -137,10 +132,24 @@ def load_transform_ev_station_data():
 
     # save to json file
     ev_gdf.to_file("static/ev_gdf.json", driver='GeoJSON')
+    return ev_gdf
+
+
+def get_live_ev_station_data():
+    print("Loading EV data from URL...")
+    # Ladestationen verfügbarkeit
+    url = "https://data.geo.admin.ch/ch.bfe.ladestellen-elektromobilitaet/status/oicp/ch.bfe.ladestellen-elektromobilitaet.json"
+    response = requests.get(url)
+    data = response.json()
+    stations = data.get("EVSEStatuses")[0].get("EVSEStatusRecord")
+    live_ev_df = pd.DataFrame(stations)
+    return live_ev_df
 
 
 if __name__ == "__main__":
     # load_transform_save_antenna_data()
     # load_transform_save_political_shape_geo_data()
-    load_transform_ev_station_data()
+    # load_transform_ev_station_data()
+    # print(get_live_ev_station_data().head())
+    print(get_static_ev_station_data().head())
     print("Done.")
