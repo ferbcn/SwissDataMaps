@@ -12,9 +12,9 @@ from data_loader import get_live_ev_station_data
 
 dash.register_page(
     __name__,
-    name='EV Charger Network',
-    title='EV Charging Stations Network',
-    description='EV Chargers Coverage in Switzerland.',
+    name='EV Chargers Swiss',
+    title='EV Charging Stations Network Status',
+    description='EV charging stations in Switzerland with real time availability and status data.',
     path='/ev',
     image_url='assets/ev.png'
 )
@@ -22,15 +22,12 @@ dash.register_page(
 print("Loading EV Stations data...")
 ev_gdf = gpd.read_file("static/ev_gdf.json")
 
+DDOWN_OPTIONS = ["All", "Available", "Occupied", "OutOfService", "Unknown"]
+
 layout = html.Div([
-    html.H3(children='EV Charger Network'),
+    html.H3(children='Swiss EV Charger Network - Real Time Data'),
     html.Div([
-        dcc.Checklist(
-            id='layer-toggle',
-            options=[{'label': 'Only Show Available', 'value': 'available'}],
-            value=[''],
-            className='layer-toggle',
-        ),
+        dcc.Dropdown(DDOWN_OPTIONS, 'All', className='ddown', id='ddown-type'),
     ], className="ddmenu"),
 
     dcc.Loading(
@@ -51,9 +48,9 @@ layout = html.Div([
 
 @callback(
     Output('graph-content-ev', 'figure'),
-    Input('layer-toggle', 'value'),
+    Input('ddown-type', 'value'),
 )
-def update_graph(selected_layers=None):
+def update_graph(selected_layer=None):
 
     colors = {"Available": "green", "Occupied": "orange", "OutOfService": "red", "Unknown": "gray"}
     # Create a pandas DataFrame from the dictionary
@@ -65,22 +62,27 @@ def update_graph(selected_layers=None):
     df['EVSEStatusColor'] = df['EVSEStatus'].map(colors)
 
     # remove rows where EVSEStatus is not "Available"
-    if 'available' in selected_layers:
-        df = df[df['EVSEStatus'] == "Available"]
+    if selected_layer in DDOWN_OPTIONS and selected_layer != "All":
+        df = df[df['EVSEStatus'] == selected_layer]
 
     count = len(df)
+    graph_title = f"{count} EV chargers ({selected_layer.lower()})"
 
     fig = go.Figure(go.Scattermapbox(lat=df['lat'], lon=df['lon'], mode='markers',
-                                     marker=dict(size=10, color=df['EVSEStatusColor'], opacity=0.7),
-                                     customdata=list(
+                                        marker=dict(
+                                            size=10,
+                                            color=df['EVSEStatusColor'],
+                                            opacity=0.7,
+                                    ),
+                                    customdata=list(
                                          zip(df["name"].tolist(), df["plugs"].tolist(), df['EVSEStatus'].tolist())),
-                                     ))
+                                    ))
 
     fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}"
                                     "<br>Status: %{customdata[2]}<extra></extra>")
 
     fig.update_layout(mapbox_style="open-street-map",
-                      title_text=f"{count} EV Stations",
+                      title_text=graph_title,
                       title_font={'size': 12, 'color': 'lightgray'},
                       autosize=True,
                       margin=dict(
@@ -92,7 +94,7 @@ def update_graph(selected_layers=None):
                           ),
                       paper_bgcolor='rgba(0,0,0,0)',
                       font=dict(color='lightgray'),
-                      mapbox=dict(center=dict(lat=46.8, lon=8.2), zoom=7),
+                      mapbox=dict(center=dict(lat=46.8, lon=8.2), zoom=7)
                       )
 
     return fig
