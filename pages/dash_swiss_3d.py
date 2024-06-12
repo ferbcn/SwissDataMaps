@@ -16,19 +16,17 @@ dash.register_page(
     image_url='assets/map3d.png'
 )
 
-# Define the shape files (Kantone, Bezirke, Gemeinden), and their file paths (files have been pre-processed)
-shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5000, 10000]],
-                    "Bezirke": ["static/gdf_bez.json", "BEZIRSKFLA", [100000, 500, 10000]],
-                    "Gemeinden": ["static/gdf_gem.json","GEMEINDEFLA", [100000, 200, 10000]]}
-
-ddown_options = list(shape_files_dict.keys())
 ddown_methods = ["linear", "cubic", "nearest"]
+
+# Preload shape data
+filepath = "static/gdf_kan.json"
+print("Loading Shape data...")
+gdf = gpd.read_file(filepath)
 
 layout = [
     modal,
     html.H3(children='Swiss Topographic Map'),
     html.Div([
-        dcc.Dropdown(ddown_options, 'Kantone', className='ddown', id='dropdown-shape'),
         dcc.Dropdown(ddown_methods, "linear", className='ddown', id='dropdown-method')
     ], className="ddmenu"),
     dcc.Loading(
@@ -49,13 +47,9 @@ layout = [
 
 @callback(
     Output('graph-content-5', 'figure'),
-    Input('dropdown-shape', 'value'),
     Input('dropdown-method', 'value'),
 )
-def update_graph(shape_type="Kantone", method="cubic"):
-    filepath = shape_files_dict.get(shape_type)[0]
-    print("Loading Shape data...")
-    gdf = gpd.read_file(filepath)
+def update_graph(method="cubic"):
 
     print("Drawing Map...")
     # iterate over geopandas dataframe gdf and extract all x,y, z values
