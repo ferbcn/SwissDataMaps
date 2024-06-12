@@ -26,7 +26,7 @@ ddown_options = list(shape_files_dict.keys())
 DATA_OPTIONS = ["Population", "Area", "Density"]
 
 filepath = "static/gdf_kan.json"
-print("Pre-loading Shape data for all shapes...")
+print("Loading Shape data for all shapes...")
 gdf_kan = gpd.read_file("static/gdf_kan.json")
 gdf_bez = gpd.read_file("static/gdf_bez.json")
 gdf_gem = gpd.read_file("static/gdf_gem.json")

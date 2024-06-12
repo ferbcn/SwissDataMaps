@@ -27,6 +27,7 @@ else:
 
 
 DDOWN_OPTIONS = ["All", "Available", "Occupied", "OutOfService", "Unknown"]
+colors = {"Available": "green", "Occupied": "orange", "OutOfService": "red", "Unknown": "gray"}
 
 layout = html.Div([
     html.H3(children='Swiss EV Charger Network'),
@@ -46,19 +47,19 @@ layout = html.Div([
             html.Div([
 
                 html.Div([
-                    html.Span(style={'background-color': 'green'}, className='legend-color'),
+                    html.Span(style={'background-color': colors.get("Available")}, className='legend-color'),
                     html.Span('Available', style={'margin-right': '15px'}),
                 ], className='legend-item'),
                 html.Div([
-                    html.Span(style={'background-color': 'orange'}, className='legend-color'),
+                    html.Span(style={'background-color': colors.get("Occupied")}, className='legend-color'),
                     html.Span("Occupied"),
                 ], className='legend-item'),
                 html.Div([
-                    html.Span(style={'background-color': 'red'}, className='legend-color'),
+                    html.Span(style={'background-color': colors.get("OutOfService")}, className='legend-color'),
                     html.Span("OutOfService"),
                 ], className='legend-item'),
                 html.Div([
-                    html.Span(style={'background-color': 'gray'}, className='legend-color'),
+                    html.Span(style={'background-color': colors.get("Unknown")}, className='legend-color'),
                     html.Span("Unknown"),
                 ], className='legend-item'),
             ], className='legend-container'),
@@ -107,7 +108,6 @@ layout = html.Div([
 )
 def update_graph(selected_layer=None):
 
-    colors = {"Available": "green", "Occupied": "orange", "OutOfService": "red", "Unknown": "gray"}
     # if cached file is older than 24h or does not exist, load fresh data
     if os.path.exists("static/ev_gdf.json") and time.time() < os.path.getctime("static/ev_gdf.json") + 60*60*24:
         print("Using cached EV static data from file (not older than 24h) ...")
@@ -153,7 +153,7 @@ def update_graph(selected_layer=None):
     fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}"
                                     "<br>Status: %{customdata[2]}<extra></extra>")
 
-    fig.update_layout(mapbox_style="open-street-map",
+    fig.update_layout(mapbox_style="carto-positron",
                       title_text=graph_title,
                       title_font={'size': 12, 'color': 'lightgray'},
                       autosize=True,
