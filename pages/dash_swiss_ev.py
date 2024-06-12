@@ -25,11 +25,6 @@ if os.path.exists("static/ev_gdf.json"):
 else:
     print("EV Stations file not found.")
 
-print("Loading Live EV Stations data...")
-if os.path.exists("static/live_ev_df.json"):
-    live_ev_df = pd.read_json("static/live_ev_df.json", lines=True)
-else:
-    print("Live EV Stations file not found.")
 
 DDOWN_OPTIONS = ["All", "Available", "Occupied", "OutOfService", "Unknown"]
 
@@ -124,7 +119,7 @@ def update_graph(selected_layer=None):
     print("Loading live EV station data...")
     if os.path.exists("static/live_ev_df.json") and time.time() < os.path.getctime("static/live_ev_df.json") + 60*1*1:
         print("Using cached live EV data from file (not older than 1 min) ...")
-        live_df = pd.DataFrame(live_ev_df)
+        live_df = pd.read_json("static/live_ev_df.json", lines=True)
     else:
         print("Loading FRESH live EV data...")
         live_df = get_live_ev_station_data()
