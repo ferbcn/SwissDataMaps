@@ -124,7 +124,7 @@ def update_graph(selected_layer=None):
     print("Loading live EV station data...")
     if os.path.exists("static/live_ev_df.json") and time.time() < os.path.getctime("static/live_ev_df.json") + 60*1*1:
         print("Using cached live EV data from file (not older than 1 min) ...")
-        live_df = pd.DataFrame(live_ev_df)
+        live_df = pd.read_json("static/live_ev_df.json", lines=True)
     else:
         print("Loading FRESH live EV data...")
         live_df = get_live_ev_station_data()
