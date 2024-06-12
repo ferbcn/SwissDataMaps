@@ -150,6 +150,5 @@ if __name__ == "__main__":
     # load_transform_save_antenna_data()
     # load_transform_save_political_shape_geo_data()
     # load_transform_ev_station_data()
-    # print(get_live_ev_station_data().head())
-    print(get_static_ev_station_data().head())
+    print(get_live_ev_station_data().head())
     print("Done.")

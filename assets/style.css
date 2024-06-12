@@ -38,7 +38,7 @@ body{
 .container-main{
     margin-top: 10px;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
 }
 
 Pre{
@@ -161,7 +161,6 @@ p{
     /*box-shadow: 0 2px 4px rgb(152, 188, 206, 0.5);*/
 }
 
-
 .nav-button{
     color: var(--text_color);
     cursor: pointer;
@@ -280,4 +279,41 @@ p{
         opacity: 0;
         display: none;
     }
+}
+
+.source-data-ev{
+    color: var(--primary);
+    font-size: 12px;
+    position: absolute;
+    right: 20px;
+    top: 100px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.legend-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.legend-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+    font-size: 1vh;
+}
+
+.legend-color{
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    margin-right: 5px;
 }
