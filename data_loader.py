@@ -143,6 +143,8 @@ def get_live_ev_station_data():
     data = response.json()
     stations = data.get("EVSEStatuses")[0].get("EVSEStatusRecord")
     live_ev_df = pd.DataFrame(stations)
+    # save to json file
+    live_ev_df.to_json("static/live_ev_df.json", orient='records', lines=True)
     return live_ev_df
 
 
