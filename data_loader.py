@@ -143,6 +143,8 @@ def get_live_ev_station_data():
     data = response.json()
     stations = data.get("EVSEStatuses")[0].get("EVSEStatusRecord")
     live_ev_df = pd.DataFrame(stations)
+    # save to json file
+    live_ev_df.to_json("static/live_ev_df.json", orient='records', lines=True)
     return live_ev_df
 
 
@@ -150,6 +152,5 @@ if __name__ == "__main__":
     # load_transform_save_antenna_data()
     # load_transform_save_political_shape_geo_data()
     # load_transform_ev_station_data()
-    # print(get_live_ev_station_data().head())
-    print(get_static_ev_station_data().head())
+    print(get_live_ev_station_data().head())
     print("Done.")

@@ -12,9 +12,9 @@
 }
 
 body{
-        color: var(--text_color);
+    color: var(--text_color);
     position: absolute;
-    top: 60px;
+    top: 50px;
     left: 0;
     text-align: center;
     font-family: arial, serif;
@@ -38,7 +38,7 @@ body{
 .container-main{
     margin-top: 10px;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
 }
 
 Pre{
@@ -64,6 +64,16 @@ p{
     text-align: left;
 }
 
+/*on mobile */
+@media screen and (max-width: 600px) {
+    h3 {
+        font-size: 20px;
+    }
+    h4 {
+        font-size: 18px;
+    }
+}
+
 /* Navigation Menu and HomePage */
 
 .logo-text-box{
@@ -71,7 +81,7 @@ p{
     flex-direction: row;
     justify-content: flex-start;
     align-content: flex-end;
-    padding: 0 50px;
+    padding: 0 40px;
     width: 90%;
 }
 
@@ -79,15 +89,15 @@ p{
     float: left;
     width: 15vw;
     height: 15vw;
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 150px;
+    max-height: 150px;
     margin-right: 20px;
     box-shadow: 0 2px 4px rgb(0,0,0,0.5);
 }
 
 .long-text{
     padding-left: 2vw;
-    text-align: left;
+    text-align: justify;
 }
 
 .homepage-links{
@@ -114,6 +124,7 @@ p{
     transition: background-color 0.3s ease-in-out;
 }
 .link-item-img-text{
+    text-align: justify;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -160,7 +171,6 @@ p{
     opacity: 0.95;
     /*box-shadow: 0 2px 4px rgb(152, 188, 206, 0.5);*/
 }
-
 
 .nav-button{
     color: var(--text_color);
@@ -258,13 +268,6 @@ p{
     align-items: center;
 }
 
-/*on mobile */
-@media screen and (max-width: 600px) {
-    h3 {
-        font-size: 18px;
-    }
-}
-
 .modal-autohide {
     animation: fadeOut 2s forwards;
 }
@@ -280,4 +283,41 @@ p{
         opacity: 0;
         display: none;
     }
+}
+
+.source-data-ev{
+    color: var(--primary);
+    font-size: 12px;
+    position: absolute;
+    right: 20px;
+    top: 100px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.legend-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.legend-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+    font-size: 1vh;
+}
+
+.legend-color{
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    margin-right: 5px;
 }
