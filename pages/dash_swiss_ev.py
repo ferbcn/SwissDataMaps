@@ -25,11 +25,6 @@ if os.path.exists("static/ev_gdf.json"):
 else:
     print("EV Stations file not found.")
 
-print("Loading Live EV Stations data...")
-if os.path.exists("static/live_ev_df.json"):
-    live_ev_df = pd.read_json("static/live_ev_df.json", lines=True)
-else:
-    print("Live EV Stations file not found.")
 
 DDOWN_OPTIONS = ["All", "Available", "Occupied", "OutOfService", "Unknown"]
 
