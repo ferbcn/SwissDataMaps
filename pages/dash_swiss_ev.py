@@ -76,19 +76,13 @@ layout = html.Div([
                                     },
                                 style_table={
                                     'font-size': '1.2vh',
-                                    'height': '20vh',
                                     'max-width': '50%',
                                     'margin-left': 'auto',
                                     'margin-right': 'auto',
-                                    # 'background-color': 'darkgray',
                                 },
                                 style_cell={
-                                    'padding': '5px',
-                                    # 'background-color': 'darkgray',
                                     'textAlign': 'right',
                                     'color': 'gray',
-                                    'height': '10px',
-                                    'font-type': 'Arial',
                                 },
                                 style_cell_conditional=[
                                     {
