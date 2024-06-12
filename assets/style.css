@@ -71,7 +71,7 @@ p{
     flex-direction: row;
     justify-content: flex-start;
     align-content: flex-end;
-    padding: 0 50px;
+    padding: 0 40px;
     width: 90%;
 }
 
@@ -79,15 +79,15 @@ p{
     float: left;
     width: 15vw;
     height: 15vw;
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 150px;
+    max-height: 150px;
     margin-right: 20px;
     box-shadow: 0 2px 4px rgb(0,0,0,0.5);
 }
 
 .long-text{
     padding-left: 2vw;
-    text-align: left;
+    text-align: justify;
 }
 
 .homepage-links{
@@ -114,6 +114,7 @@ p{
     transition: background-color 0.3s ease-in-out;
 }
 .link-item-img-text{
+    text-align: justify;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
