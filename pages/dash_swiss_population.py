@@ -25,6 +25,13 @@ shape_files_dict = {"Kantone": ["static/gdf_kan.json", "KANTONSFLA", [1000000, 5
 ddown_options = list(shape_files_dict.keys())
 DATA_OPTIONS = ["Population", "Area", "Density"]
 
+filepath = "static/gdf_kan.json"
+print("Pre-loading Shape data for all shapes...")
+gdf_kan = gpd.read_file("static/gdf_kan.json")
+gdf_bez = gpd.read_file("static/gdf_bez.json")
+gdf_gem = gpd.read_file("static/gdf_gem.json")
+
+gdf_preload = {"Kantone":gdf_kan, "Bezirke":gdf_bez, "Gemeinden":gdf_gem}
 
 layout = [
     modal,
@@ -51,16 +58,12 @@ layout = [
 
 @callback(
     Output('graph-content-2', 'figure'),
-    Input('dropdown-pop', 'value'),
     Input('dropdown-shape', 'value'),
+    Input('dropdown-pop', 'value'),
 )
-def update_graph(api_id="Population", shape_type="Kantone"):
-    # if api_id is None or shape_type is None:
-    #     return
-
-    filepath = shape_files_dict.get(shape_type)[0]
+def update_graph(shape_type="Kantone", api_id="Population"):
     print("Loading Shape data...")
-    gdf = gpd.read_file(filepath)
+    gdf = gdf_preload.get(shape_type)
     print("Converting to GeoJSON...")
     geojson_data = json.loads(gdf.to_json())    # Needed for Choroplethmapbox
 
