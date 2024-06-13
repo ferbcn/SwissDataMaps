@@ -126,7 +126,7 @@ def update_graph(selected_layer=None):
 
     # Inner Join the live data with the existing data (key = EvseID)
     print("Merging live data with existing data...")
-    df = pd.merge(df, live_df, on='EvseID', how='inner')
+    df = pd.merge(df, live_df, on='EvseID', how='outer')
     df['EVSEStatusColor'] = df['EVSEStatus'].map(colors)
 
     # Count dataset by all Statuses
