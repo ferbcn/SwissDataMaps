@@ -31,11 +31,6 @@ colors = {"Available": "green", "Occupied": "orange", "OutOfService": "red", "Un
 
 layout = html.Div([
     html.H3(children='Swiss EV Charger Network'),
-    html.Div([
-        html.Div([
-            "Select: ", dcc.Dropdown(DDOWN_OPTIONS, 'All', className='ddown', id='ddown-type'),
-        ], className='ddmenu'),
-    ], className="ddmenu"),
 
     dcc.Loading(
         id="loading",
@@ -65,7 +60,7 @@ layout = html.Div([
             ], className='legend-container'),
 
             # Data Table
-            dash_table.DataTable(id='table',
+            dash_table.DataTable(id='my-data-table',
                                 style_as_list_view=True,
                                 style_header={
                                         'backgroundColor': 'lightgray',
@@ -103,11 +98,15 @@ layout = html.Div([
 
 @callback(
     Output('graph-content-ev', 'figure'),
-    Output('table', 'data'),
-    Input('ddown-type', 'value'),
+    Output('my-data-table', 'data'),
+    Input('my-data-table', 'active_cell')
 )
-def update_graph(selected_layer=None):
+def update_graph(active_cell, selected_layer="All"):
 
+    print("Selected Rows: ", active_cell)
+    if active_cell:
+        selected_layer = DDOWN_OPTIONS[active_cell['row']]
+    
     # if cached file is older than 24h or does not exist, load fresh data
     if os.path.exists("static/ev_gdf.json") and time.time() < os.path.getctime("static/ev_gdf.json") + 60*60*24:
         print("Using cached EV static data from file (not older than 24h) ...")
@@ -124,7 +123,7 @@ def update_graph(selected_layer=None):
         print("Loading FRESH live EV data...")
         live_df = get_live_ev_station_data()
 
-    # Inner Join the live data with the existing data (key = EvseID)
+    # Outer Join the live data with the existing data (key = EvseID)
     print("Merging live data with existing data...")
     df = pd.merge(df, live_df, on='EvseID', how='outer')
     df['EVSEStatusColor'] = df['EVSEStatus'].map(colors)
@@ -140,20 +139,21 @@ def update_graph(selected_layer=None):
     count = len(df)
     graph_title = f"{count} EV chargers ({selected_layer.lower()})"
 
+    print("Plotting maps...")
     fig = go.Figure(go.Scattermapbox(lat=df['lat'], lon=df['lon'], mode='markers',
-                                        marker=dict(
-                                            size=10,
-                                            color=df['EVSEStatusColor'],
-                                            opacity=0.7,
+                                    marker=dict(
+                                        size=10,
+                                        color=df['EVSEStatusColor'],
+                                        opacity=0.7,
                                     ),
                                     customdata=list(
                                          zip(df["name"].tolist(), df["plugs"].tolist(), df['EVSEStatus'].tolist())),
                                     ))
-
+    # Define the tooltip
     fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}"
                                     "<br>Status: %{customdata[2]}<extra></extra>")
 
-    fig.update_layout(mapbox_style="carto-positron",
+    fig.update_layout(mapbox_style="open-street-map",
                       title_text=graph_title,
                       title_font={'size': 12, 'color': 'lightgray'},
                       autosize=True,
@@ -175,7 +175,7 @@ def update_graph(selected_layer=None):
 
     # Define the data table
     table_data = [{"Status": i, "Total": p, "%": w} for i, p, w in zip(DDOWN_OPTIONS, counts, percentages)]
-
+    table_data = pd.DataFrame(table_data).to_dict('records')
     # Return the figure and the table data
     return fig, table_data
 
