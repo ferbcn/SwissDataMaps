@@ -18,13 +18,13 @@ dash.register_page(
     image_url='assets/ev.png',
     order=1
 )
-# Load Station data from JSON file
-print("Loading EV Stations data...")
-if os.path.exists("static/ev_gdf.json"):
-    ev_gdf = gpd.read_file("static/ev_gdf.json")
-else:
-    print("EV Stations file not found.")
-
+# # Load Station data from JSON file
+# print("Loading EV Stations data...")
+# if os.path.exists("static/ev_gdf.json"):
+#     ev_gdf = gpd.read_file("static/ev_gdf.json")
+# else:
+#     print("EV Stations file not found.")
+#
 
 DDOWN_OPTIONS = ["All", "Available", "Occupied", "OutOfService", "Unknown"]
 colors = {"Available": "green", "Occupied": "orange", "OutOfService": "red", "Unknown": "gray"}
@@ -110,7 +110,9 @@ def update_graph(active_cell, selected_layer="All"):
     # if cached file is older than 24h or does not exist, load fresh data
     if os.path.exists("static/ev_gdf.json") and time.time() < os.path.getctime("static/ev_gdf.json") + 60*60*24:
         print("Using cached EV static data from file (not older than 24h) ...")
-        df = pd.DataFrame(ev_gdf)
+        # df = pd.DataFrame(ev_gdf)
+        df = gpd.read_file("static/ev_gdf.json")
+
     else:
         print("Loading FRESH EV static data...")
         df = load_transform_ev_station_data()
