@@ -141,11 +141,7 @@ def update_graph(active_cell, selected_layer="All"):
 
     print("Plotting maps...")
     fig = go.Figure(go.Scattermapbox(lat=df['lat'], lon=df['lon'], mode='markers',
-                                    marker=dict(
-                                        size=10,
-                                        color=df['EVSEStatusColor'],
-                                        opacity=0.7,
-                                    ),
+                                    marker={'size': 10, 'color': df['EVSEStatusColor'], 'opacity': 0.7},
                                     customdata=list(
                                          zip(df["name"].tolist(), df["plugs"].tolist(), df['EVSEStatus'].tolist())),
                                     ))
@@ -153,8 +149,14 @@ def update_graph(active_cell, selected_layer="All"):
     fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}"
                                     "<br>Status: %{customdata[2]}<extra></extra>")
 
-    fig.update_layout(mapbox_style="open-street-map",
-                      title_text=graph_title,
+    fig.update_layout(title_text=graph_title,
+                      mapbox_style="open-street-map",
+                      mapbox = {
+                            # 'accesstoken': token,
+                            # 'style': "outdoors",
+                            'zoom': 7,
+                            'center': dict(lat=46.8, lon=8.2),
+                      },
                       title_font={'size': 12, 'color': 'lightgray'},
                       autosize=True,
                       margin=dict(
@@ -166,7 +168,6 @@ def update_graph(active_cell, selected_layer="All"):
                           ),
                       paper_bgcolor='rgba(0,0,0,0)',
                       font=dict(color='lightgray'),
-                      mapbox=dict(center=dict(lat=46.8, lon=8.2), zoom=7)
                       )
     # Add total to "All"
     counts[0] = sum(counts)
