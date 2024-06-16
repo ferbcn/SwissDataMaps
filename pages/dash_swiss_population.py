@@ -63,7 +63,12 @@ layout = [
 )
 def update_graph(shape_type="Kantone", api_id="Population"):
     print("Loading Shape data...")
-    gdf = gdf_preload.get(shape_type)
+    try:
+        gdf = gdf_preload.get(shape_type)
+    except:
+        filepath = shape_files_dict.get(shape_type)[0]
+        gdf = gpd.read_file(filepath)
+
     print("Converting to GeoJSON...")
     geojson_data = json.loads(gdf.to_json())    # Needed for Choroplethmapbox
 
@@ -94,7 +99,7 @@ def update_graph(shape_type="Kantone", api_id="Population"):
                       mapbox_zoom=7,
                       mapbox_center={"lat": 47, "lon": 8.2},
                       autosize=True,
-                      margin=dict(l=20, r=20, t=10, b=10),
+                      margin=dict(l=0, r=0, b=0, t=0),
                       paper_bgcolor='rgba(0,0,0,0.0)',  # Set the background color of the map
                       coloraxis_showscale=False,  # Hide the color scale
                       font=dict(color='lightgray'),

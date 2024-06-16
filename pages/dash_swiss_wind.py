@@ -151,7 +151,7 @@ def update_graph(color_input):
                       legend_title_text='Power (kW)',
                       title_font={'size': 12, 'color': 'lightgray'},
                       autosize=True,
-                      margin=dict(l=20, r=20, b=10, t=40,pad=10),
+                      margin=dict(l=0, r=0, b=0, t=0),
                       paper_bgcolor='rgba(0,0,0,0)',
                       font=dict(color='lightgray'),
                       )

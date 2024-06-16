@@ -84,13 +84,7 @@ def update_graph(selected_layers=None, shape_type=None):
                       title_font={'size': 12, 'color': 'lightgray'},
                       coloraxis_showscale=False,
                       autosize=True,
-                      margin=dict(
-                          l=20,  # left margin
-                          r=20,  # right margin
-                          b=10,  # bottom margin
-                          t=40,  # top margin
-                          pad=10  # padding
-                          ),
+                      margin=dict(l=0, r=0, b=0, t=0),
                       paper_bgcolor='rgba(0,0,0,0)',
                       font=dict(color='lightgray'),
                       )

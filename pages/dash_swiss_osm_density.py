@@ -119,13 +119,7 @@ def update_graph(tag_value="shop", shape_type=None, country_code="CH"):
     fig.update_layout(title_text=f"{tag_value.capitalize()}: {total_points} points", title_font={'size': 12})
     fig.update_layout(coloraxis_showscale=False,
                       autosize=True,
-                      margin=dict(
-                          l=20,
-                          r=20,
-                          b=10,
-                          t=40,
-                          pad=10  # padding
-                      ),
+                      margin=dict(l=0, r=0, b=0, t=0),
                       paper_bgcolor='rgba(0,0,0,0.0)',
                       font=dict(color='lightgray'),
                       )

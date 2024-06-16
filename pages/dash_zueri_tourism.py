@@ -90,13 +90,7 @@ def update_graph(api_id=101):
     fig.update_layout(title_text=f"{api_ids_names.get(str(api_id))}: {total_points} points", title_font={'size': 12, 'color': 'lightgray'})
     fig.update_layout(coloraxis_showscale=False,
                       autosize=True,
-                      margin=dict(
-                          l=20,  # left margin
-                          r=20,  # right margin
-                          b=10,  # bottom margin
-                          t=40,  # top margin
-                          pad=10  # padding
-                        ),
+                      margin=dict(l=0, r=0, b=0, t=0),
                       paper_bgcolor='rgba(0,0,0,0.0)',
                       )
 
