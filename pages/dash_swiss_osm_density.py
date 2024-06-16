@@ -14,8 +14,8 @@ from dash_modal_long_wait import modal, toggle_modal
 
 dash.register_page(
     __name__,
-    name='Open Street Density Maps',
-    title='Open Street Maps Swiss Population Densities',
+    name='POI Density Maps',
+    title='Open Street Maps POIs and Population Densities',
     description='Open Street Maps Points of Interest collected via the Overpass API using python overpy augmented with population data and density maps.',
     path='/density',
     image_url='assets/density.png'

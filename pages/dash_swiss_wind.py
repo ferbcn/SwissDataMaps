@@ -22,9 +22,9 @@ color_scales = ['aggrnyl', 'agsunset', 'algae', 'amp', 'armyrose', 'balance',
 
 dash.register_page(
     __name__,
-    name='Swiss Wind Turbines',
+    name='Wind Turbines',
     title='Swiss Wind Energy Turbines',
-    description='Locations of Wind Energy Turbines in Switzerland.',
+    description='Locations of Wind Turbines in Switzerland.',
     path='/wind',
     image_url='assets/wind.png'
 )
@@ -35,7 +35,7 @@ wind_gdf = gpd.read_file("static/wind-turb.csv")
 wind_gdf['manufacturer'] = wind_gdf['manufacturer'].str.replace('Ã¼', 'ü')
 
 layout = html.Div([
-    html.H3(children='Swiss (missing) Wind Energy'),
+    html.H3(children='Swiss Wind Energy Turbines'),
     html.Div([
         html.Div([
             "Color-Scale: ",
