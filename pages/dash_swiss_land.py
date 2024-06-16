@@ -1,4 +1,6 @@
 import json
+import os
+
 import plotly.graph_objects as go
 import dash
 from dash import callback, dcc, Input, Output, html
@@ -58,7 +60,7 @@ def update_graph(pop):
                                         visible=True
                                         ))
 
-    token = "pk.eyJ1IjoiZmVyMmJjbiIsImEiOiJjbHhlYm45eDQwZmRuMmtxdHE2endtbDkyIn0.Rvlmi6NpKQ11HFsnh3BTlg"
+    token = os.getenv("MAPBOX_TOKEN")
 
     # # Set the mapbox style and center
     # fig.update_layout(
