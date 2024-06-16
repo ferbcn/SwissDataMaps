@@ -62,20 +62,6 @@ def update_graph(pop):
 
     token = os.getenv("MAPBOX_TOKEN")
 
-    # # Set the mapbox style and center
-    # fig.update_layout(
-    #                   mapbox_accesstoken=token,
-    #                   mapbox_style="satellite",
-    #                   # mapbox_style="carto-positron",
-    #                   mapbox_zoom=7,
-    #                   mapbox_center={"lat": 47, "lon": 8.2},
-    #                   autosize=True,
-    #                   paper_bgcolor='rgba(0,0,0,0.0)',  # Set the background color of the map
-    #                   # coloraxis_showscale=False,  # Hide the color scale
-    #                   font=dict(color='lightgray'),
-    #                   margin={"r": 0, "t": 0, "l": 0, "b": 0}
-    #                   )
-
     # Add a button to the layout that toggles the visibility of the Choroplethmapbox
     fig.update_layout(
         mapbox_accesstoken=token,
@@ -87,7 +73,7 @@ def update_graph(pop):
         paper_bgcolor='rgba(0,0,0,0.0)',  # Set the background color of the map
         # coloraxis_showscale=False,  # Hide the color scale
         font=dict(color='lightgray'),
-        margin={"r": 0, "t": 0, "l": 0, "b": 0},
+        margin=dict(l=0, r=0, b=0, t=0),
         updatemenus=[
             dict(
                 type="buttons",

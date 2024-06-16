@@ -161,13 +161,7 @@ def update_graph(active_cell, selected_layer="All"):
                       },
                       title_font={'size': 12, 'color': 'lightgray'},
                       autosize=True,
-                      margin=dict(
-                          l=0,  # left margin
-                          r=0,  # right margin
-                          b=0,  # bottom margin
-                          t=20,  # top margin
-                          pad=10  # padding
-                          ),
+                      margin=dict(l=0, r=0, b=0, t=0),
                       paper_bgcolor='rgba(0,0,0,0)',
                       font=dict(color='lightgray'),
                       )
