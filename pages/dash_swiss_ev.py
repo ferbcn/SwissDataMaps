@@ -11,9 +11,9 @@ from data_loader import get_live_ev_station_data, load_transform_ev_station_data
 
 dash.register_page(
     __name__,
-    name='EV Chargers Swiss',
-    title='EV Charging Stations Network Status',
-    description='EV charging stations in Switzerland with real time availability and status data.',
+    name='EV Chargers API',
+    title='Live EV Charging Stations Network Status',
+    description='Electric Vehicle charging stations in Switzerland with real time availability and status data.',
     path='/ev',
     image_url='assets/ev.png',
     order=1

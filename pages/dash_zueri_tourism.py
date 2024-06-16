@@ -13,7 +13,7 @@ from data_loader import ZueriData
 
 dash.register_page(
     __name__,
-    name='Zürich Tourism',
+    name='Zürich POIs API',
     title='Zürich Tourism Points of Interest',
     description='Points of Interest in Zürich retrieved from the Zürich Tourism API.',
     path="/zueri",

@@ -6,8 +6,8 @@ import geopandas as gpd
 
 dash.register_page(
     __name__,
-    name='Swiss Landscape',
-    title='Landschafts Typen Maps',
+    name='Landschafts-Typen',
+    title='Landschafts-Typen Maps',
     description='Landschafts-Typen der Schweiz.',
     path="/land",
     image_url='assets/land.png',
