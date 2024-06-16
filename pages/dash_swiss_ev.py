@@ -92,7 +92,7 @@ layout = html.Div([
             href='https://github.com/SFOE/ichtankestrom_Documentation',
             target='_blank',  # This makes the link open in a new tab
         )
-    ], className='source-data-ev'),
+    ], className='source-data'),
 
 ])
 
@@ -107,8 +107,8 @@ def update_graph(active_cell, selected_layer="All"):
     if active_cell:
         selected_layer = DDOWN_OPTIONS[active_cell['row']]
     
-    # if cached file is older than 24h or does not exist, load fresh data
-    if os.path.exists("static/ev_gdf.json") and time.time() < os.path.getctime("static/ev_gdf.json") + 60*60*24:
+    # if cached file is older than 4h or does not exist, load fresh data
+    if os.path.exists("static/ev_gdf.json") and time.time() < os.path.getctime("static/ev_gdf.json") + 60*60*4:
         print("Using cached EV static data from file (not older than 24h) ...")
         # df = pd.DataFrame(ev_gdf)
         df = gpd.read_file("static/ev_gdf.json")
@@ -150,20 +150,20 @@ def update_graph(active_cell, selected_layer="All"):
     # Define the tooltip
     fig.update_traces(hovertemplate="GPS: %{lat}, %{lon} <br>Name: %{customdata[0]} <br>Plugs: %{customdata[1]}"
                                     "<br>Status: %{customdata[2]}<extra></extra>")
-
+    token = os.getenv("MAPBOX_TOKEN")
     fig.update_layout(title_text=graph_title,
-                      mapbox_style="open-street-map",
-                      mapbox = {
-                            # 'accesstoken': token,
-                            # 'style': "outdoors",
+                      # mapbox_style="open-street-map",
+                      mapbox={
+                            'accesstoken': token,
+                            'style': "streets",
                             'zoom': 7,
                             'center': dict(lat=46.8, lon=8.2),
                       },
                       title_font={'size': 12, 'color': 'lightgray'},
                       autosize=True,
                       margin=dict(
-                          l=20,  # left margin
-                          r=20,  # right margin
+                          l=0,  # left margin
+                          r=0,  # right margin
                           b=0,  # bottom margin
                           t=20,  # top margin
                           pad=10  # padding

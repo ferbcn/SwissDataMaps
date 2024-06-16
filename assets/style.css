@@ -289,7 +289,7 @@ p{
     font-size: 12px;
     position: absolute;
     right: 20px;
-    top: 100px;
+    bottom: 100px;
     display: flex;
     justify-content: flex-end;
 }
