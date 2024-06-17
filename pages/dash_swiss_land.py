@@ -8,9 +8,9 @@ import geopandas as gpd
 
 dash.register_page(
     __name__,
-    name='Landschafts-Typen',
-    title='Landschafts-Typen Maps',
-    description='Landschafts-Typen der Schweiz.',
+    name='Landscape Types',
+    title='Map of Swiss Landscape Types',
+    description='Map of Swiss Landscape Types over an aerial satellite map.',
     path="/land",
     image_url='assets/land.png',
     order=1
@@ -72,7 +72,7 @@ def update_graph(pop):
         autosize=True,
         paper_bgcolor='rgba(0,0,0,0.0)',  # Set the background color of the map
         # coloraxis_showscale=False,  # Hide the color scale
-        font=dict(color='lightgray'),
+        font=dict(color='darkgray'),
         margin=dict(l=0, r=0, b=0, t=0),
         updatemenus=[
             dict(
