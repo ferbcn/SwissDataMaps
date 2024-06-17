@@ -148,6 +148,33 @@ def get_live_ev_station_data():
     return live_ev_df
 
 
+def load_map_save_antenna_data():
+    print("Loading mobile antenna data...")
+    filepath = "static/mobilfunkanlagen.json"
+    gdf = gpd.read_file(filepath)
+
+    print("Converting to epsg4326...")
+    gdf.set_crs(epsg=2056, inplace=True)
+    gdf = gdf.to_crs(epsg=4326)
+
+    print("Columns: ", gdf.columns)
+    print("Shape: ", gdf.shape)
+    print(gdf.head())
+    print(gdf.index)
+
+    print("Mapping power codes...")
+    power_dict = {"Leistungsklasse : sehr klein (bis 6 W)": 2,
+                  "Leistungsklasse : klein (bis 500 W)": 3,
+                  "Leistungsklasse : mittel (bis 5'000 W)": 5,
+                  "Leistungsklasse : gross (über 5'000 W)": 10,}
+    gdf["power_code"] = gdf["power_de"].map(power_dict)
+
+    gdf = gdf[['geometry', 'typ_de', 'techno_de', 'power_de', 'power_code']]
+
+    # Save as GeoJSON
+    gdf.to_file("static/mobilfunk.json", driver="GeoJSON")
+    print("Done.")
+
 if __name__ == "__main__":
     # load_transform_save_antenna_data()
     # load_transform_save_political_shape_geo_data()

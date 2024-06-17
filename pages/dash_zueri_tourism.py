@@ -1,11 +1,6 @@
 # Zürich Tourism API: https://www.zuerich.com/en/api/v2/data
-import os
-import json
-import time
-
 import pandas as pd
 import plotly.express as px
-import requests
 import dash
 from dash import callback, Output, Input, dcc, html
 
@@ -82,7 +77,8 @@ def update_graph(api_id=101):
     # Create a pandas DataFrame from the dictionary
     df = pd.DataFrame(data_dict)
     fig = px.density_mapbox(df, lat=lats, lon=longs, radius=10,
-                            mapbox_style="open-street-map", color_continuous_scale="spectral",
+                            mapbox_style="open-street-map",
+                            color_continuous_scale="spectral",
                             custom_data=['names', 'infos'],
                             center=dict(lat=47.37, lon=8.53), zoom=12,
                             )

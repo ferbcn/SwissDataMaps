@@ -9,15 +9,15 @@ import plotly.graph_objects as go
 
 dash.register_page(
     __name__,
-    name='5G Network',
-    title='5G-Network Antennas in Switzerland',
+    name='5G Coverage',
+    title='5G-Network Coverage in Switzerland',
     description='Points of 5G Antenna Coverage in Switzerland.',
     path='/antenna',
     image_url='assets/antenna.png'
 )
 
 # Load Antenna data from JSON file
-print("Loading Antenna data...")
+print("Loading 5G Antenna data...")
 ant_gdf = gpd.read_file("static/ant_gdf.json")
 count = len(ant_gdf)
 
@@ -27,9 +27,6 @@ ddown_options = ["-", "Kantone", "Bezirke", "Gemeinden"]
 shape_files_dict = {"Kantone": "static/gdf_kan.json",
                     "Bezirke": "static/gdf_bez.json",
                     "Gemeinden": "static/gdf_gem.json"}
-
-# TODO: maybe load all GDFs into memory in one go on startup
-
 
 layout = html.Div([
     html.H3(children='5G Network Coverage'),
