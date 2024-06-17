@@ -11,7 +11,7 @@ dash.register_page(
     title='3G, 4G, 5G Network Antennas in Switzerland',
     description='Layered maps displaying the distribution of 3G, 4G and 5G antennas in Switzerland.',
     path="/mobile",
-    image_url='assets/land.png',
+    image_url='assets/mobile.png',
     order=150
 )
 
