@@ -29,7 +29,7 @@ def build_page_registry():
             html.Div([
                 html.H4(f"{page['title']}"),
                 html.Div([
-                    html.Img(src=page['image_url'], className='link-item-img'),
+                    html.Img(src=page['image_url'], className='link-item-img', alt=page['name']),
                     html.P(page['description']),
                 ], className='link-item-img-text'),
             ], className="link-item"),
