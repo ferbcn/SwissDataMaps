@@ -13,7 +13,7 @@ dash.register_page(
     title='5G-Network Coverage in Switzerland',
     description='Points of 5G Antenna Coverage in Switzerland.',
     path='/antenna',
-    image_url='assets/antenna.png'
+    image_url='https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/antenna.png'
 )
 
 # Load Antenna data from JSON file

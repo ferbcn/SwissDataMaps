@@ -12,7 +12,7 @@ dash.register_page(
     title='Zürich Tourism Points of Interest',
     description='Points of Interest in Zürich retrieved from the Zürich Tourism API.',
     path="/zueri",
-    image_url='assets/zueri.png',
+    image_url='https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/zueri.png',
     order=10
 )
 

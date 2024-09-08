@@ -27,7 +27,7 @@ tag_keys, tag_values, tag_key_value_list = get_tag_keys_values_options()
 shape_files_dict = {"-": "",
                     "Kantone": "static/gdf_kan.json",
                     "Bezirke": "static/gdf_bez.json",
-                    "Gemeinden": "static/gdf_gem.json",
+                    "Gemeinden": "https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/density.png",
                     }
 
 ddown_options = list(shape_files_dict.keys())

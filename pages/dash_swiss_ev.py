@@ -15,7 +15,7 @@ dash.register_page(
     title='Live EV Charging Stations Network Status',
     description='Electric Vehicle charging stations in Switzerland with real time availability and status data.',
     path='/ev',
-    image_url='assets/ev.png',
+    image_url='https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/ev.png',
     order=1
 )
 # # Load Station data from JSON file

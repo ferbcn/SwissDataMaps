@@ -13,7 +13,7 @@ dash.register_page(
     title='Swiss 3D Topographic Map',
     description='3D Topographic surface representation of Switzerland.',
     path="/map3d",
-    image_url='assets/map3d.png'
+    image_url='https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/map3d.png'
 )
 
 ddown_methods = ["linear", "cubic", "nearest"]

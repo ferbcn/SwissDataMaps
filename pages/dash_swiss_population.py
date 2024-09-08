@@ -11,7 +11,7 @@ dash.register_page(
     title='Swiss Regional Population Maps',
     description='Map of Switzerland with Population, Area and Density by Kanton, Bezirk and Gemeinde.',
     path="/swiss",
-    image_url='assets/swiss.png',
+    image_url='https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/swiss.png',
     order=1
 )
 

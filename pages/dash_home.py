@@ -17,7 +17,7 @@ layout = html.Div([
 
     html.Div([
         html.Div([
-            html.P([html.Img(src="assets/logo.png", alt="Swiss Geo Data Maps Logo", className="logo"),
+            html.P([html.Img(src="https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/logo.png", alt="Swiss Geo Data Maps Logo", className="logo"),
                'Welcome to the SwissMaps.xyz Project. '
                'We aim to provide open source geospatial data visualizations making it easy for everyone '
                'to access and understand geospatial data and information.',
