@@ -31,7 +31,7 @@ dash.register_page(
 
 print("Loading Turbine data...")
 wind_gdf = gpd.read_file("static/wind-turb.csv")
-# correct bad charecters in manufacturer column
+# correct bad characters in manufacturer column
 wind_gdf['manufacturer'] = wind_gdf['manufacturer'].str.replace('Ã¼', 'ü')
 
 layout = html.Div([
