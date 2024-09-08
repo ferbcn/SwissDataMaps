@@ -12,7 +12,7 @@ dash.register_page(
     title='Map of Swiss Landscape Types',
     description='Map of Swiss Landscape Types over an aerial satellite map.',
     path="/land",
-    image_url='assets/land.png',
+    image_url='https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/land.png',
     order=1
 )
 

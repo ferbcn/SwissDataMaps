@@ -18,7 +18,7 @@ dash.register_page(
     title='Open Street Maps POIs and Population Densities',
     description='Open Street Maps Points of Interest collected via the Overpass API using python overpy augmented with population data and density maps.',
     path='/density',
-    image_url='assets/density.png'
+    image_url='https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/density.png'
 )
 
 tag_keys, tag_values, tag_key_value_list = get_tag_keys_values_options()
@@ -27,7 +27,7 @@ tag_keys, tag_values, tag_key_value_list = get_tag_keys_values_options()
 shape_files_dict = {"-": "",
                     "Kantone": "static/gdf_kan.json",
                     "Bezirke": "static/gdf_bez.json",
-                    "Gemeinden": "https://f-web-cdn.fra1.cdn.digitaloceanspaces.com/density.png",
+                    "Gemeinden": "static/gdf_gem.json",
                     }
 
 ddown_options = list(shape_files_dict.keys())
