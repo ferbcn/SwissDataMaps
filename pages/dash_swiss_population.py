@@ -1,4 +1,6 @@
 import json
+
+import pandas as pd
 import plotly.graph_objects as go
 import dash
 from dash import callback, dcc, Input, Output, html
@@ -70,7 +72,9 @@ def update_graph(shape_type="Kantone", api_id="Population"):
         gdf = gpd.read_file(filepath)
 
     print("Converting to GeoJSON...")
-    geojson_data = json.loads(gdf.to_json())    # Needed for Choroplethmapbox
+    # geojson_data = json.loads(gdf.to_json())    # Needed for Choroplethmapbox
+    gdf = gdf.map(lambda x: str(x) if isinstance(x, pd.Timestamp) else x)
+    geojson_data = json.loads(gdf.to_json())
 
     area_name = shape_files_dict.get(shape_type)[1]
     z_max_options = shape_files_dict.get(shape_type)[2]

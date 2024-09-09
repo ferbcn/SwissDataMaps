@@ -130,6 +130,10 @@ def update_graph(tag_value="shop", shape_type=None, country_code="CH"):
         print("Loading Shape data...")
         gdf = gpd.read_file(filepath)
         print("Converting to GeoJSON...")
+
+        # geojson_data = json.loads(gdf.to_json())
+        # Convert Timestamp objects to strings
+        gdf = gdf.map(lambda x: str(x) if isinstance(x, pd.Timestamp) else x)
         geojson_data = json.loads(gdf.to_json())
 
         # Count the number of points in each polygon
